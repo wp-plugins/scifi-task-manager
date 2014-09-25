@@ -7,6 +7,7 @@ Stable tag: 0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
+
 == Description ==
 
 scifi Task Manager is simple admin dash only task manager. Purpose of it is to manage and
@@ -14,17 +15,23 @@ organize the work of site that is living in it. It add dashboard widget for easy
 and full list in Dashboard -> Tasks menu. The tasks itself are not public accessible it is
 member only information.
 
-TODO
-
-* Better responsive UX
-* User role configuration
-* Full preview lock
 
 == Screenshots ==
 
 1. Admin dashboard widget
 2. Add new task
 3. Tasks overview
+
+
+== TODO ==
+
+* Email notifications
+* FE task creation
+* Better responsive UX
+* Full preview lock
+* More translations
+(DONE) User role configuration
+
 
 == Installation ==
 
@@ -33,11 +40,22 @@ TODO
 3. Activate scifi Task Manager from your Plugins page.
 4. Go to Dashboard -> Tasks, and add new task
 5. You can configure Dashboard widget by your needs.
+6. Settings -> scifi Task Manager and edit settings like a roles, tags support and menu position
+
 
 == Changelog ==
+
+= 0.3 =
+* Fixed permission issue reported by jonh M reis
+* Fixed some visual editor glitches on 4.0
+* Added configuration page
+* Added option to select user roles that have access to task manager
+* Added option to enable/disable tags support
+* Added option to change place in admin panel that menu is appeared
 
 = 0.2 =
 * First public release
 
 = 0.1 =
 * Initial bump
+

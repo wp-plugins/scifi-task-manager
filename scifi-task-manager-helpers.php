@@ -1,4 +1,31 @@
-<?php
+<?php 
+
+/**
+ * Hook on install
+ */
+function _scifi_task_manager_hook_install() {
+  $roles = array('administrator', 'editor', 'author', 'contributor');
+  add_option('scifi-task-manager_roles', $roles);
+  add_option('scifi-task-manager_menu', 'main3');
+  add_option('scifi-task-manager_tags', '1');
+}
+
+/**
+ * Hook on uninstall
+ */
+function _scifi_task_manager_hook_uninstall() {
+  delete_option('scifi-task-manager_roles');
+  delete_option('scifi-task-manager_menu_item');
+}
+
+/**
+ * Check if current user have access to scifi task manager
+ *
+ * @return bool
+ */
+function _scifi_task_manager_current_user_can() {
+  return array_intersect(wp_get_current_user()->roles, get_option('scifi-task-manager_roles', array())) ? TRUE : FALSE;
+}
 
 /**
  * Get registered priorities or just a one
@@ -310,4 +337,91 @@ function _scifi_task_manager_dashboard_widget_config($post, $callback_args) {
   else {
     update_user_meta(get_current_user_id(), '_scifi_task_manager_admin_widget', $_POST);
   }
+}
+
+/**
+ * Admin settings form
+ */
+function _scifi_task_manager_admin_settings() {
+
+  if (!empty($_POST['scifi-task-manager-admin-settings']) && wp_verify_nonce($_POST['scifi-task-manager-admin-settings'], 'scifi-task-manager-admin-settings')) {
+    update_option('scifi-task-manager_menu', $_POST['scifi-task-manager_menu']);
+    update_option('scifi-task-manager_roles', $_POST['scifi-task-manager_roles']);
+    update_option('scifi-task-manager_tags', !empty($_POST['scifi-task-manager_tags']));
+  }
+
+  $menu_position = get_option('scifi-task-manager_menu');
+  global $wp_roles;
+  $roles = array_flip(get_option('scifi-task-manager_roles', array()));
+
+  ?>
+  <div class="wrap">
+    <h2><?php _e('scifi Task Manager settings', 'scifi-task-manager')?></h2>
+
+    <form method="post">
+      <?php wp_nonce_field('scifi-task-manager-admin-settings', 'scifi-task-manager-admin-settings')?>
+      <table class="form-table">
+
+        <tr>
+          <th>
+            <label for="scifi-task-manager-menu">
+              <?php _e('Menu position', 'scifi-task-manager')?>
+            </label>
+          </th>
+          <td>
+            <select name="scifi-task-manager_menu">
+              <option value=""><?php _e('Dashboard', 'scifi-task-manager')?></option>
+              <option value="main3" <?php selected('main3', $menu_position)?>><?php _e('Main Menu (top)', 'scifi-task-manager')?></option>
+              <option value="main73" <?php selected('main73', $menu_position)?>><?php _e('Main Menu (auto)', 'scifi-task-manager')?></option>
+              <option value="ab" <?php selected('ab', $menu_position)?>><?php _e('Admin Bar', 'scifi-task-manager')?></option>
+              <option value="tools" <?php selected('tools', $menu_position)?>><?php _e('Tools', 'scifi-task-manager')?></option>
+            </select>
+          </td>
+        </tr>
+
+        <tr>
+          <th>
+            <?php _e('Tags support', 'scifi-task-manager')?>
+          </th>
+          <td>
+            <p>
+              <input type="checkbox" id="scifi-task-manager_tags" name="scifi-task-manager_tags" value="1" <?php checked(get_option('scifi-task-manager_tags'), 1)?> />
+              <label for="scifi-task-manager_tags">
+                <?php _e('Enable', 'scifi-task-manager')?>
+              </label>
+            </p>
+            <?php if (get_option('scifi-task-manager_tags')):?>
+            <p>
+              <a href="<?php echo admin_url('edit-tags.php?taxonomy=scifi-task-manager-tag')?>">
+                <?php _e('Manage tags', 'scifi-task-manager')?>
+              </a>
+            </p>
+            <?php endif?>
+          </td>
+        </tr>
+
+        <tr>
+          <th>
+            <label for="scifi-task-manager-roles">
+              <?php _e('User roles', 'scifi-task-manager')?>
+            </label>
+          </th>
+          <td>
+            <?php foreach ($wp_roles->roles as $role_id => $role_data):?>
+              <p>
+                <input type="checkbox" id="scifi-task-manager_roles-<?php echo esc_attr($role_id)?>" name="scifi-task-manager_roles[]" value="<?php echo esc_attr($role_id)?>" <?php checked(isset($roles[$role_id], $role_id), TRUE)?> />
+                <label for="scifi-task-manager_roles-<?php echo esc_attr($role_id)?>">
+                  <?php echo $role_data['name']?>
+                </label>
+              </p>
+            <?php endforeach?>
+          </td>
+        </tr>
+
+      </table>
+      
+      <?php echo submit_button()?>
+    </form>
+  </div>
+  <?php
 }

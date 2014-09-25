@@ -6,12 +6,11 @@
  * Description: Simple admin dashboard task manager.
  * Author:      Adrian Dimitrov <dimitrov.adrian@gmail.com>
  * Author URI:  http://scifi.bg/opensource/
- * Version:     0.2
+ * Version:     0.3
  * Text Domain: scifi-task-manager
  * Domain Path: /languages/
  */
 
-define('SCIFI_TASK_MANAGER_ROLE', '');
 
 /**
  * Localize the plugin.
@@ -19,6 +18,12 @@ define('SCIFI_TASK_MANAGER_ROLE', '');
 add_action('plugins_loaded', function() {
   load_plugin_textdomain('scifi-task-manager', FALSE, dirname(plugin_basename(__FILE__)) . '/languages/');
 });
+
+/**
+ * Install/Uninstall hooks.
+ */
+register_activation_hook(__FILE__, '_scifi_task_manager_hook_install');
+register_uninstall_hook(__FILE__, '_scifi_task_manager_hook_uninstall');
 
 /**
  * Include plugin helpers.
@@ -34,6 +39,7 @@ add_action('admin_init', function() {
    * Register post types
    */
   register_post_type('scifi-task-manager', array(
+    'label' => __('Tasks', 'scifi-task-manager'),
     'labels' => array(
       'name' => _x('Tasks', 'Post Type General Name', 'scifi-task-manager'),
       'singular_name' => _x('Task', 'Post Type Singular Name', 'scifi-task-manager'),
@@ -49,35 +55,36 @@ add_action('admin_init', function() {
       'not_found' => __('No tasks with this criteria', 'scifi-task-manager'),
       'not_found_in_trash' => __('Not found in Trash', 'scifi-task-manager'),
     ),
-    'menu_position' => 5,
     'public' => FALSE,
     'show_ui' => TRUE,
     'show_in_menu' => TRUE,
     'show_in_nav_menus' => TRUE,
     'show_in_admin_bar' => TRUE,
+    'menu_position' => 10,
     'hierarchical' => TRUE,
     'capability_type' => 'post',
     'query_var' => FALSE,
     'supports' => array('author', 'title', 'editor', 'comments'),
     'can_export' => TRUE,
     'has_archive' => TRUE,
-    'menu_icon' => 'dashicons-portfolio',
+    'menu_icon' => 'dashicons-clipboard',
   ));
 
-  /**
-   * Register taxonomies
-   */
-  register_taxonomy('scifi-task-manager-tag', 'scifi-task-manager', array(
-    'label' => __('Tags', 'scifi-task-manager'),
-    'singular_label' => __('Tag', 'scifi-task-manager'),
-    'show_in_nav_menus' => FALSE,
-    'show_admin_column' => TRUE,
-    'show_ui' => TRUE,
-    'public' => FALSE,
-    'query_var' => FALSE,
-    'hierarchical' => TRUE,
-  ));
-
+  if (get_option('scifi-task-manager_tags')) {
+    /**
+     * Register taxonomies
+     */
+    register_taxonomy('scifi-task-manager-tag', 'scifi-task-manager', array(
+      'label' => __('Tags', 'scifi-task-manager'),
+      'singular_label' => __('Tag', 'scifi-task-manager'),
+      'show_in_nav_menus' => FALSE,
+      'show_admin_column' => TRUE,
+      'show_ui' => TRUE,
+      'public' => FALSE,
+      'query_var' => FALSE,
+      'hierarchical' => TRUE,
+    ));
+  }
 
   /**
    * Register statuses
@@ -94,11 +101,52 @@ add_action('admin_init', function() {
     ));
   }
 
-  /**
-   * Add UI links
-   */
-  add_dashboard_page(__('Tasks', 'scifi-task-manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager');
+  // @menu_position
+  if (get_option('scifi-task-manager_menu') == 'ab' && _scifi_task_manager_current_user_can()) {
+    add_action('wp_before_admin_bar_render', function() {
+      global $wp_admin_bar;
+      $args = array(
+        'id' => 'scifi-task-manager',
+        'title' => sprintf('<span class="ab-item dashicons-clipboard">%s</span>', __('Tasks', 'scifi-task-manager')),
+        'href' => admin_url('edit.php?post_type=scifi-task-manager'),
+        'group' => FALSE,
+      );
+      $wp_admin_bar->add_node( $args );
+    });
+  }
 
+});
+
+/**
+ * Menu links
+ */
+add_action('admin_menu', function() {
+  add_options_page(__('scifi Task Manager', 'scifi-task-manager'), __('scifi Task Manager', 'scifi-task-manager'), 'manage_options', 'scifi-task-manager', '_scifi_task_manager_admin_settings');
+  $menu_position = get_option('scifi-task-manager_menu', '');
+  if (_scifi_task_manager_current_user_can()) {
+    if ($menu_position == 'tools') {
+      add_management_page(__('scifi Task Manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager');
+    }
+    elseif ($menu_position == 'main3') {
+      add_menu_page(__('scifi Task Manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager', NULL, 'dashicons-clipboard', 3);
+    }
+    elseif ($menu_position == 'main73') {
+      add_menu_page(__('scifi Task Manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager', NULL, 'dashicons-clipboard', 73);
+    }
+    elseif ($menu_position == '') {
+      add_dashboard_page(__('scifi Task Manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager');
+    }
+  }
+
+});
+
+/**
+ * Add dashboard widget.
+ */
+add_action('wp_dashboard_setup', function() {
+  if (_scifi_task_manager_current_user_can()) {
+    wp_add_dashboard_widget('scifi_task_manager_widget', __('Tasks', 'scifi-task-manager'), '_scifi_task_manager_dashboard_widget', '_scifi_task_manager_dashboard_widget_config');
+  }
 });
 
 /**
@@ -108,7 +156,7 @@ add_action('admin_head', function() {
   ?>
   <style>
     .preview-active .preview-content { background: #fff; color: #555; height: 20px; border-bottom: none; }
-    #scifi-task-manager-single-task-preview { background: #fff; padding: 2%; border: 1px solid #dedede; clear: both; width: 95.8%; float: left; margin-bottom: 1em; }
+    #scifi-task-manager-single-task-preview { background: #fff; padding: 2%; border: 1px solid #E5E5E5; border-top: none; border-bottom: none; clear: both; width: 95.8%; float: left; margin-bottom: 0; }
     #scifi_task_manager_widget p.info { color: #AAA; font-size: 1.2em; font-weight: bold; text-align: center; padding-bottom: 1em; }
     .dashboard-widget-control-form fieldset { display: inline-block; vertical-align: top; margin: 11px; }
     .dashboard-widget-control-form,
@@ -137,13 +185,6 @@ add_action('admin_head', function() {
     ?>
   </style>
 <?php
-});
-
-/**
- * Add dashboard widget.
- */
-add_action('wp_dashboard_setup', function() {
-  wp_add_dashboard_widget('scifi_task_manager_widget', __('Tasks', 'scifi-task-manager'), '_scifi_task_manager_dashboard_widget', '_scifi_task_manager_dashboard_widget_config');
 });
 
 /**
@@ -252,11 +293,14 @@ add_action('add_meta_boxes_scifi-task-manager', function($post) {
       'sort_column' => 'menu_order, post_title',
       'echo' => 0,
     );
-    $users = get_users(array(
-      'role' => SCIFI_TASK_MANAGER_ROLE,
-      'orderby' => 'display_name',
-      'fields' => array('ID', 'display_name'),
-    ));
+    $users = array();
+    foreach (get_option('scifi-task-manager_roles', array()) as $role) {
+      $users += get_users(array(
+        'role' => $role,
+        'orderby' => 'display_name',
+        'fields' => array('ID', 'display_name'),
+      ));
+    }
 
     if ($action != 'edit') {
       $post->menu_order = 50;
@@ -346,7 +390,6 @@ add_action('edit_form_after_title', function() {
                 .show()
                 .html($('#content').text())
                 .html($("#content_ifr").contents().find('body').html());
-              $('#post-status-info').hide();
             }
             else {
               $(previewContent).hide();
@@ -358,7 +401,6 @@ add_action('edit_form_after_title', function() {
               $('#wp-content-wrap')
                 .removeClass('preview-active')
                 .addClass(newClass);
-              $('#post-status-info').show();
             }
           });
           <?php if ($action === 'edit'):?>
@@ -471,16 +513,6 @@ add_action('manage_scifi-task-manager_posts_custom_column', function($column_nam
   echo $output ? $output : '&mdash;';
 }, 10, 2);
 
-
-/**
- * @list
- * Add link for tags management.
- */
-add_filter('views_edit-scifi-task-manager', function($views) {
-  $views['scifi-task-manager-tag-taxonomy'] = '<a href="edit-tags.php?taxonomy=scifi-task-manager-tag">' . __('Edit tags', 'scifi-task-manager') . '</a>';
-  return $views;
-});
-
 /**
  * @list
  * Add custom filters widgets.
@@ -490,13 +522,21 @@ add_action('restrict_manage_posts', function() {
   if ($typenow !== 'scifi-task-manager') {
     return;
   }
-  $users = get_users(array(
-    'role' => SCIFI_TASK_MANAGER_ROLE,
-    'orderby' => 'display_name',
-    'fields' => array('ID', 'display_name'),
-  ));
+  $users = array();
+  foreach (get_option('scifi-task-manager_roles', array()) as $role) {
+    $users += get_users(array(
+      'role' => $role,
+      'orderby' => 'display_name',
+      'fields' => array('ID', 'display_name'),
+    ));
+  }
   $tags_taxonomy = get_taxonomy('scifi-task-manager-tag');
-  $tags_terms = get_terms($tags_taxonomy->name, 'pad_counts=1&hide_empty=0&hierarchical=1');
+  if (get_option('scifi-task-manager_tags')) {
+    $tags_terms = get_terms($tags_taxonomy->name, 'pad_counts=1&hide_empty=0&hierarchical=1');
+  }
+  else {
+    $tags_terms = array();
+  }
   include 'template-post-list-filters.php';
 });
 
