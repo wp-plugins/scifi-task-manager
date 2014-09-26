@@ -11,9 +11,9 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 == Description ==
 
 scifi Task Manager is simple admin dash only task manager. Purpose of it is to manage and
-organize the work of site that is living in it. It add dashboard widget for easy overview,
+organize the work of site that is living in it. The plugin add dashboard widget for easy overview,
 and full list in Dashboard -> Tasks menu. The tasks itself are not public accessible it is
-member only information.
+member (roles can be configured by settings) only information.
 
 
 == Screenshots ==
@@ -30,7 +30,7 @@ member only information.
 * Better responsive UX
 * Full preview lock
 * More translations
-(DONE) User role configuration
+* (DONE) User role configuration
 
 
 == Installation ==
