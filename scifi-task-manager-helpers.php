@@ -211,6 +211,9 @@ function scifi_task_manager_dashboard_widget_get_tasks($config = array()) {
     $assigned_to_me = $wpdb->get_col($wpdb->prepare("SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key = '_scifi-task-manager_assignee' AND meta_value = %s;", get_current_user_id()));
     $from_me = $wpdb->get_col($wpdb->prepare("SELECT ID FROM {$wpdb->posts} WHERE post_type = 'scifi-task-manager' AND post_status NOT IN ('auto-draft', 'draft') AND post_author = %s;", get_current_user_id()));
     $args['post__in'] = array_unique(array_merge($assigned_to_me, $from_me));
+    if (!$args['post__in']) {
+      return array();
+    }
   }
 
   if (!empty($config['time'])) {
@@ -392,7 +395,7 @@ function _scifi_task_manager_admin_settings() {
             </p>
             <?php if (get_option('scifi-task-manager_tags')):?>
             <p>
-              <a href="<?php echo admin_url('edit-tags.php?taxonomy=scifi-task-manager-tag')?>">
+              <a href="<?php echo admin_url('edit-tags.php?taxonomy=scifi-task-manager-tag&post_type=scifi-task-manager')?>">
                 <?php _e('Manage tags', 'scifi-task-manager')?>
               </a>
             </p>

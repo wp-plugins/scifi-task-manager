@@ -11,6 +11,13 @@
  * Domain Path: /languages/
  */
 
+ 
+ /**
+  * TODO:
+  
+  custom capabilities
+  
+  */
 
 /**
  * Localize the plugin.
@@ -90,12 +97,14 @@ add_action('admin_init', function() {
    * Register statuses
    */
   foreach (scifi_task_manager_get_statuses() as $status_id => $status) {
+    $label_count = is_rtl() ? '<span class="count">(%s)</span>' . $status->label : $status->label . ' <span class="count">(%s)</span>';
     register_post_status($status_id, array(
       'label' => $status->label,
+      'label_count' => _n_noop($label_count, $label_count),
       'public' => TRUE,
       'exclude_from_search' => TRUE,
-      'show_in_admin_all_list' => FALSE,
-      'show_in_admin_status_list' => FALSE,
+      'show_in_admin_all_list' => TRUE,
+      'show_in_admin_status_list' => TRUE,
       'scifi_task_manager' => TRUE,
       'scifi_task_manager_progress' => $status->progress,
     ));
@@ -156,7 +165,7 @@ add_action('admin_head', function() {
   ?>
   <style>
     .preview-active .preview-content { background: #fff; color: #555; height: 20px; border-bottom: none; }
-    #scifi-task-manager-single-task-preview { background: #fff; padding: 2%; border: 1px solid #E5E5E5; border-top: none; border-bottom: none; clear: both; width: 95.8%; float: left; margin-bottom: 0; }
+    #scifi-task-manager-single-task-preview { background: #fff; padding: 2%; border: 1px solid #E5E5E5; clear: both; width: 95.8%; float: left; margin-bottom: 0; }
     #scifi_task_manager_widget p.info { color: #AAA; font-size: 1.2em; font-weight: bold; text-align: center; padding-bottom: 1em; }
     .dashboard-widget-control-form fieldset { display: inline-block; vertical-align: top; margin: 11px; }
     .dashboard-widget-control-form,
@@ -171,10 +180,14 @@ add_action('admin_head', function() {
     #dashboard-widgets #scifi_task_manager_widget .wp-list-table { border: 0; }
     #scifi_task_manager_widget td p { margin: 0; }
     /* General colorization ans styling */
-    .wp-list-table tbody .column-status,
-    .wp-list-table tbody .column-menu_order { text-align: center; vertical-align: middle; font-size: .8em; font-weight: bold; text-shadow: 0 0 6px #333; color: #fff; }
-    .wp-list-table .column-status,
-    .wp-list-table .column-menu_order { width: 80px; }
+    body.post-type-scifi-task-manager .wp-list-table tbody .column-status,
+    body.post-type-scifi-task-manager .wp-list-table tbody .column-menu_order,
+    #scifi_task_manager_widget .wp-list-table tbody .column-status,
+    #scifi_task_manager_widget .wp-list-table tbody .column-menu_order { text-align: center; vertical-align: middle; font-size: .8em; font-weight: bold; text-shadow: 0 0 6px #333; color: #fff; }
+    body.post-type-scifi-task-manager .wp-list-table .column-status,
+    body.post-type-scifi-task-manager .wp-list-table .column-menu_order,
+    #scifi_task_manager_widget .wp-list-table .column-status,
+    #scifi_task_manager_widget .wp-list-table .column-menu_order { width: 80px; }
     <?php
     foreach (scifi_task_manager_get_priorities('all') as $priority_number => $priority) {
       echo ".scifi-task-manager-priority-{$priority_number} .column-menu_order {background: " . scifi_task_manager_color($priority_number) . ';} ';
@@ -390,6 +403,7 @@ add_action('edit_form_after_title', function() {
                 .show()
                 .html($('#content').text())
                 .html($("#content_ifr").contents().find('body').html());
+              $('td#content-resize-handle').hide();
             }
             else {
               $(previewContent).hide();
@@ -401,6 +415,7 @@ add_action('edit_form_after_title', function() {
               $('#wp-content-wrap')
                 .removeClass('preview-active')
                 .addClass(newClass);
+              $('td#content-resize-handle').show();
             }
           });
           <?php if ($action === 'edit'):?>
@@ -461,7 +476,7 @@ add_filter('bulk_actions-edit-scifi-task-manager', '__return_empty_array');
 
 /**
  * @list
- * Remove noneed inline operations
+ * Remove no-need inline operations
  */
 add_filter('page_row_actions', function($actions, $post) {
   unset($actions['inline hide-if-no-js']);
