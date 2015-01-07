@@ -27,7 +27,6 @@ member (roles can be configured by settings) only information.
 
 * Email notifications
 * FE task creation
-* Better responsive UX
 * Full preview lock
 * More translations
 * (DONE) User role configuration
@@ -45,6 +44,14 @@ member (roles can be configured by settings) only information.
 
 
 == Changelog ==
+
+= 0.6 =
+* Added mail notify support
+* Changed status and progress colors, colors are now values
+* Changes in UI
+* Fixed bug appending "-2" to task names
+* Fixed bug with removing quick actions from all post types
+* Fixed bug preventing all users in roles to be shown as assignees or reporter
 
 = 0.5 =
 * Open View instead of Edit for owner users

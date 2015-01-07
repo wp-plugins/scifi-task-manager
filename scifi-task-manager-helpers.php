@@ -31,16 +31,38 @@ function _scifi_task_manager_current_user_can() {
  * Get registered priorities or just a one
  *
  * @param $priority
+ * @param $label
  *
  * @return array|string
  */
-function scifi_task_manager_get_priorities($priority = 'all') {
-  $labels = apply_filters('scifi-task-manager-priorities', array());
+function scifi_task_manager_get_priorities($priority = 'all', $label = FALSE) {
+  $priorities = array();
+  $priorities[10] = array(
+    'label' => __('Trivial', 'scifi-task-manager'),
+    'color' => '#4FC5CF',
+  );
+  $priorities[25] = array(
+    'label' => __('Low', 'scifi-task-manager'),
+    'color' => '#45D6AF',
+  );
+  $priorities[50] = array(
+    'label' => __('Normal', 'scifi-task-manager'),
+    'color' => '#9ED645',
+  );
+  $priorities[75] = array(
+    'label' => __('High', 'scifi-task-manager'),
+    'color' => '#FF6600',
+  );
+  $priorities[90] = array(
+    'label' => __('Critical', 'scifi-task-manager'),
+    'color' => '#CC0000',
+  );
+  $priorities = apply_filters('scifi-task-manager-priorities', $priorities);
   if ($priority === 'all') {
-    return $labels;
+    return $priorities;
   }
   else {
-    return empty($labels[$priority]) ? __('Normal', 'scifi-task-manager') : $labels[$priority];
+    return empty($priorities[$priority]) ? NULL : ($label ? $priorities[$priority]['label'] : $priorities[$priority]);
   }
 }
 
@@ -48,40 +70,71 @@ function scifi_task_manager_get_priorities($priority = 'all') {
  * Get registered statuses or just a one
  *
  * @param $status
+ * @param $label
  *
  * @return array|object
  */
-function scifi_task_manager_get_statuses($status = 'all') {
-  $statuses = apply_filters('scifi-task-manager-statuses', array());
+function scifi_task_manager_get_statuses($status = 'all', $label = FALSE) {
+  $statuses = array();
+  $statuses['scifitm-pending'] = array(
+    'label' => __('Pending', 'scifi-task-manager'),
+    'progress' => 80,
+    'color' => '#cccccc',
+  );
+  $statuses['scifitm-rejected'] = array(
+    'label' => __('Rejected', 'scifi-task-manager'),
+    'progress' => 70,
+    'color' => '#333333',
+  );
+  $statuses['scifitm-hold'] = array(
+    'label' => __('Hold', 'scifi-task-manager'),
+    'progress' => 60,
+    'color' => '#FFF7BA',
+  );
+  $statuses['scifitm-inprogress'] = array(
+    'label' => __('In Progress', 'scifi-task-manager'),
+    'progress' => 40,
+    'color' => '#CAF28A',
+  );
+  $statuses['scifitm-waitreview'] = array(
+    'label' => __('Awaiting review', 'scifi-task-manager'),
+    'progress' => 40,
+    'color' => '#E3B1F0',
+  );
+  $statuses['scifitm-inreview'] = array(
+    'label' => __('In Review', 'scifi-task-manager'),
+    'progress' => 30,
+    'color' => '#C564DE',
+  );
+  $statuses['scifitm-resolved'] = array(
+    'label' => __('Resolved', 'scifi-task-manager'),
+    'progress' => 0,
+    'color' => '#9ED645',
+  );
+  $statuses['scifitm-completed'] = array(
+    'label' => __('Completed', 'scifi-task-manager'),
+    'progress' => 0,
+    'color' => '#9ED645',
+  );
+  
+  $statuses = apply_filters('scifi-task-manager-statuses', $statuses);
   if ($status === 'all') {
     return $statuses;
   }
   else {
-    return empty($statuses[$status]) ? NULL : $statuses[$status];
+    return empty($statuses[$status]) ? NULL : ($label ? $statuses[$status]['label'] : $statuses[$status]);
   }
-}
-
-/**
- * Prepare suitable color for given number
- *
- * @param $n
- *
- * @return string
- */
-function scifi_task_manager_color($n) {
-  $r = (150*$n+105)/100;
-  $g = (205*(100-$n)+50)/100;
-  return '#' . str_pad(dechex($r), 2, "0", STR_PAD_LEFT) . str_pad(dechex($g), 2, "0", STR_PAD_LEFT) . '33';
 }
 
 /**
  * Prepare task postdata
  *
  * @param $post
+ * @param $postattr
  *
  * @return array|object
  */
-function _scifi_task_manager_prepare_post_data($post) {
+function _scifi_task_manager_prepare_post_data($post, $postattr = array()) {
   $returnobj = is_object($post);
   if (!$returnobj) {
     $post = (object) $post;
@@ -91,8 +144,8 @@ function _scifi_task_manager_prepare_post_data($post) {
     if (!$post->post_title && !empty($post->ID)) {
       $post->post_title = $post->ID;
     }
-    if ($post->post_status !== 'auto-draft' && $post->post_status !== 'draft') {
-      $post->post_name = '#' . preg_replace('#[^\w\d\-\_\/]+#i', '', substr(strtoupper($post->post_name), 0, 31));
+    if (!empty($postattr['post_name_taskid'])) {
+      $post->post_name = '#' . preg_replace('#[^\w\d\-\_\/]+#i', '', substr(strtoupper($postattr['post_name_taskid']), 0, 31));
     }
     $post->comment_status = 'open';
     $post->ping_status = 'close';
@@ -120,11 +173,14 @@ function _scifi_task_manager_format_column($column_name, $post_id, $return = FAL
   if ($column_name == 'status') {
     $status = scifi_task_manager_get_statuses($post->post_status);
     if ($status) {
-      $output = $status->label;
+      $output = $status['label'];
     }
   }
   elseif ($column_name == 'priority' || $column_name == 'menu_order') {
-    $output = scifi_task_manager_get_priorities($post->menu_order);
+    $priority = scifi_task_manager_get_priorities($post->menu_order);
+    if ($priority) {
+      $output = $priority['label'];
+    }
   }
   elseif ($column_name == 'taskid') {
     $output = $post->post_name ? $post->post_name : $post->ID;
@@ -147,7 +203,7 @@ function _scifi_task_manager_format_column($column_name, $post_id, $return = FAL
   }
   elseif ($column_name == 'deadline') {
     if ($deadline && is_numeric($deadline)) {
-      $output = date(get_option('date_format', 'U'), $deadline);
+      $output = date_i18n(get_option('date_format', 'U'), $deadline);
     }
   }
   elseif ($column_name == 'attachments') {
@@ -260,6 +316,125 @@ function scifi_task_manager_dashboard_widget_get_config() {
   return $config;
 }
 
+function _scifi_task_manager_cssjs() {
+  if (get_current_screen()->base == 'dashboard' || get_current_screen()->post_type == 'scifi-task-manager') {
+    ?>
+    <style>
+      .preview-active .preview-content {
+        background: #fff;
+        color: #555;
+        height: 20px;
+        border-bottom: 1px solid #fff;
+      }
+
+      #scifi-task-manager-single-task-preview {
+        background: #fff;
+        padding: 2%;
+        border-left: 1px solid #E5E5E5;
+        border-right: 1px solid #E5E5E5;
+        clear: both;
+        width: 95.8%;
+        float: left;
+        margin-bottom: 0;
+      }
+
+      #scifi_task_manager_widget p.info {
+        color: #AAA;
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: center;
+        padding-bottom: 1em;
+      }
+
+      .dashboard-widget-control-form fieldset {
+        display: inline-block;
+        vertical-align: top;
+        margin: 11px;
+      }
+
+      .dashboard-widget-control-form,
+      #scifi-task-manager-publish.postbox .inside #minor-publishing {
+        margin: 10px;
+      }
+
+      body.post-type-scifi-task-manager .actions.bulkactions,
+      #scifi-task-manager-attachments.postbox .inside,
+      #scifi-task-manager-publish.postbox .inside,
+      #scifi-task-manager-subtasks.postbox .inside,
+      #dashboard-widgets #scifi_task_manager_widget .inside {
+        margin: 0;
+        padding: 0;
+      }
+
+      body.post-type-scifi-task-manager .actions.bulkactions {
+        width: 80%;
+        clear: both;
+        float: left;
+      }
+
+      body.post-type-scifi-task-manager .tablenav.top .bulkactions,
+      body.post-type-scifi-task-manager .inline-edit-col-right,
+      body.post-php.post-type-scifi-task-manager #wpbody-content h2 {
+        display: none;
+      }
+
+      body.post-php.post-type-scifi-task-manager #wpbody-content form#post {
+        margin-top: 30px;
+      }
+
+      body.post-php.post-type-scifi-task-manager #wpbody-content .comments-box .column-author > strong {
+        display: block;
+      }
+      body.post-php.post-type-scifi-task-manager #wpbody-content .comments-box .column-author > * {
+        display: none;
+      }
+      body.post-php.post-type-scifi-task-manager #wpbody-content #commentsdiv .inside .column-author {
+        width: 15%;
+      }
+
+      #scifi-task-manager-attachments.postbox .inside .wp-list-table,
+      #scifi-task-manager-subtasks.postbox .inside .wp-list-table,
+      #dashboard-widgets #scifi_task_manager_widget .wp-list-table {
+        border: 0;
+      }
+
+      #scifi_task_manager_widget td p {
+        margin: 0;
+      }
+
+      /* General colorization ans styling */
+      body.post-type-scifi-task-manager .wp-list-table tbody .column-status,
+      body.post-type-scifi-task-manager .wp-list-table tbody .column-menu_order,
+      #scifi_task_manager_widget .wp-list-table tbody .column-status,
+      #scifi_task_manager_widget .wp-list-table tbody .column-menu_order {
+        text-align: center;
+        vertical-align: middle;
+        font-size: .8em;
+        font-weight: bold;
+        text-shadow: 0 0 1px #000;
+        color: #fff;
+      }
+
+      body.post-type-scifi-task-manager .wp-list-table .column-status,
+      body.post-type-scifi-task-manager .wp-list-table .column-menu_order,
+      #scifi_task_manager_widget .wp-list-table .column-status,
+      #scifi_task_manager_widget .wp-list-table .column-menu_order {
+        width: 100px;
+      }
+
+      <?php
+      foreach (scifi_task_manager_get_priorities('all') as $priority_number => $priority) {
+        echo ".scifi-task-manager-priority-{$priority_number} .column-menu_order {background: " . $priority['color'] . ';} ';
+      }
+      foreach (scifi_task_manager_get_statuses('all') as $status_name => $status) {
+        echo ".scifi-task-manager-status-{$status_name} .column-status {background: " . $status['color'] . ';} ';
+      }
+      ?>
+    </style>
+  <?php
+  }
+}
+
 /**
  * Build widget configuration
  *
@@ -351,6 +526,7 @@ function _scifi_task_manager_admin_settings() {
     update_option('scifi-task-manager_menu', $_POST['scifi-task-manager_menu']);
     update_option('scifi-task-manager_roles', $_POST['scifi-task-manager_roles']);
     update_option('scifi-task-manager_tags', !empty($_POST['scifi-task-manager_tags']));
+    update_option('scifi-task-manager_mailer', !empty($_POST['scifi-task-manager_mailer']));
   }
 
   $menu_position = get_option('scifi-task-manager_menu');
@@ -421,10 +597,161 @@ function _scifi_task_manager_admin_settings() {
           </td>
         </tr>
 
+        <tr>
+          <th>
+            <?php _e('Mail notification', 'scifi-task-manager')?>
+          </th>
+          <td>
+            <p>
+              <input type="checkbox" id="scifi-task-manager_mailer" name="scifi-task-manager_mailer" value="1" <?php checked(get_option('scifi-task-manager_mailer'), 1)?> />
+              <label for="scifi-task-manager_mailer">
+                <?php _e('Enable', 'scifi-task-manager')?>
+              </label>
+            </p>
+            <p><small><?php _e('Recieve mails with changes when tasks are created or modified, or are being commented. Users have ability to unsubscribe from mail notification.', 'scifi-task-manager')?></small></p>
+          </td>
+        </tr>
+
       </table>
       
       <?php echo submit_button()?>
     </form>
   </div>
   <?php
+}
+
+/**
+ * Send mail for task changes
+ *
+ * @param $action
+ * @param $post
+ * @param null $post_before
+ *
+ * @return bool
+ */
+function scifi_task_manager_send_mails($action, $post, $old_post = NULL) {
+
+  // Check global option.
+  if (!get_option('scifi-task-manager_mailer')) {
+    return NULL;
+  }
+
+  // If this is called by comment notify, then $post arg is comment actually,
+  // so swap them
+  if ($action == 'comment') {
+    $comment = $post;
+    $post = get_post($comment->comment_post_ID);
+  }
+
+  $allowed_post_statuses = scifi_task_manager_get_statuses('all');
+
+  // If problem with $post, then exit
+  if (!$post || $post->post_type != 'scifi-task-manager' || empty($allowed_post_statuses[$post->post_status])) {
+    return NULL;
+  }
+
+  $current_user = wp_get_current_user();
+  $post_meta = get_post_meta($post->ID);
+
+  // Gathering the recipients
+  $recipients_uids = empty($post_meta['_scifi-task-manager_assignee']) ? array() : $post_meta['_scifi-task-manager_assignee'];
+  $recipients_uids[] = $post->post_author;
+  $recipients_uids = array_unique($recipients_uids);
+  $recipients = array();
+  foreach ($recipients_uids as $recipient) {
+    $_recipient_userdata = get_userdata($recipient);
+    if ($_recipient_userdata->_scifi_task_manager_recieve_mails === '' ? TRUE : !empty($_recipient_userdata->_scifi_task_manager_recieve_mails)) {
+      $recipients[] = sprintf('%s <%s>', $_recipient_userdata->data->display_name, $_recipient_userdata->data->user_email);
+    }
+  }
+
+  // Set tokens
+  $message_tokens = array(
+    '{reporter}'   => $current_user->data->display_name,
+    '{tasklink}'   => sprintf('<a href="%s" target="_blank">%s</a>', get_post_permalink($post->ID), $post->post_name),
+    '{taskid}'     => $post->post_name,
+    '{deadline}'   => empty($post_meta['_scifi-task-manager_deadline'][0]) ? '--' : $post_meta['_scifi-task-manager_deadline'][0],
+    '{tasktitle}'  => $post->post_title,
+    '{taskbody}'   => $post->post_content,
+    '{taskstatus}' => $post->post_status,
+    '{site}'       => get_bloginfo('name'),
+    '{changelist}' => '',
+  );
+
+  // Add action message
+  if ($action == 'add') {
+    $subject = sprintf(__('Created new task - %s by %s', 'scifi-task-manager'), $message_tokens['{taskid}'], $message_tokens['{reporter}']);
+    $message = __('
+Hello,
+
+{reporter} just create new task changes in task {tasklink} ({tasktitle});
+
+--
+This mail is sent automatically by task management system. Please do not reply.
+{site}', 'scifi-task-manager');
+  }
+
+  // Update action message
+  elseif ($action == 'update') {
+    $message_tokens['{changelist}'] = '';
+    if ($post->post_status != $old_post->post_status) {
+      $message_tokens['{changelist}'] .= "\n * " . sprintf(__('Status changed from %s to %s', 'scifi-task-manager'), scifi_task_manager_get_statuses($old_post->post_status, 'label'), scifi_task_manager_get_statuses($post->post_status, 'label'));
+    }
+    if ($post->menu_order != $old_post->menu_order) {
+      $message_tokens['{changelist}'] .= "\n * " . sprintf(__('Priority changed from %s to %s', 'scifi-task-manager'), scifi_task_manager_get_priorities($old_post->menu_order, 'label'), scifi_task_manager_get_priorities($post->menu_order, 'label'));
+    }
+    if ($post->post_author != $old_post->post_author) {
+      $message_tokens['{changelist}'] .= "\n * " . sprintf(__('Reporter changed from %s to %s', 'scifi-task-manager'), get_userdata($old_post->post_author, 'display_name')->display_name, get_userdata($post->post_author, 'display_name')->display_name);
+    }
+    if ($post->post_parent != $old_post->post_parent) {
+      $message_tokens['{changelist}'] .= "\n * " . sprintf(__('Parent task changed from %s to %s', 'scifi-task-manager'), get_the_title($old_post->post_parent), get_the_title($post->post_parent));
+    }
+
+    if (!$message_tokens['{changelist}']) {
+      $message_tokens['{changelist}'] = '--';
+    }
+
+    $subject = sprintf(__('Updated task - %s by %s', 'scifi-task-manager'), $message_tokens['{taskid}'], $message_tokens['{reporter}']);
+    $message = __('
+Hello,
+
+{reporter} just make changes in task {tasklink} ({tasktitle})
+
+Deadline: {deadline}
+
+Changes: {changelist}
+
+--
+This mail is sent automatically by task management system. Please do not reply.
+{site}', 'scifi-task-manager');
+  }
+
+  // Comment action message
+  elseif ($action == 'comment') {
+    $message_tokens['{commenter}'] = $comment->comment_author;
+    $message_tokens['{comment}'] = $comment->comment_content;
+    $subject = sprintf(__('New comment on task - %s by %s', 'scifi-task-manager'), $message_tokens['{taskid}'], $message_tokens['{commenter}']);
+    $message = __('
+Hello,
+
+{commenter} just make comment on your task {tasklink} ({tasktitle});
+
+<quote>
+{comment}
+</quote>
+
+--
+This mail is sent automatically by task management system. Please do not reply.
+{site}', 'scifi-task-manager');
+  }
+
+  else {
+    return NULL;
+  }
+
+  $message = wpautop(wptexturize(strtr($message, $message_tokens)));
+  $headers = array(
+    'Content-Type: text/html; charset=UTF-8',
+  );
+  return wp_mail($recipients, $subject, $message, $headers);
 }

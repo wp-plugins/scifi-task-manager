@@ -3,13 +3,27 @@
 
     <?php if ($action == 'edit'):?>
       <p>
-        <?php printf(__('Last modification: %s'), get_post_modified_time(get_option('date_format', 'U') . ' (H:i)'))?>
+        <?php printf(__('Last modification: %s', 'scifi-task-manager'), get_post_modified_time(get_option('date_format', 'U') . ' (H:i)'))?>
       </p>
     <?php endif?>
 
     <p>
       <?php _e('Task ID', 'scifi-task-manager')?>
-      <input type="text" name="post_name" value="<?php echo esc_attr(empty($post->post_name) ? $post->ID : ltrim($post->post_name, '#'))?>" maxlength="20" size="14" />
+      <?php if ($action == 'edit' && !empty($post->post_name)):?>
+        <input id="post_name_taskid" disabled="disabled" readonly="readonly" type="text" name="post_name_taskid" value="<?php echo esc_attr($post->post_name)?>" size="14" />
+      <?php else:?>
+        <input type="text" id="post_name_taskid" name="post_name_taskid" value="<?php echo esc_attr($post->ID)?>" maxlength="20" size="14" />
+        <script>
+          (function($) {
+            $(document).ready(function() {
+              $('#post_name_taskid').on('keyup', function(event) {
+                var newVal = $(this).val().toUpperCase().replace(/[^\w\d\-\_\/]+/, '').replace(/([\_\-\/])(?=\1)/g, "").substr(0, 31);
+                $(this).val(newVal);
+              });
+            });
+          }(jQuery));
+        </script>
+      <?php endif?>
     </p>
 
     <?php if ('' !== ($hierarchical_tasks = wp_dropdown_pages($hierarchical_tasks_qargs))):?>
@@ -29,9 +43,9 @@
     <p>
       <?php _e('Priority', 'scifi-task-manager')?>
       <select name="menu_order">
-        <?php foreach (scifi_task_manager_get_priorities('all') as $priority_number => $priority_label):?>
+        <?php foreach (scifi_task_manager_get_priorities('all') as $priority_number => $priority):?>
           <option value="<?php echo esc_attr($priority_number)?>" <?php selected($priority_number, $post->menu_order)?>>
-            <?php echo $priority_label?>
+            <?php echo $priority['label']?>
           </option>
         <?php endforeach?>
       </select>

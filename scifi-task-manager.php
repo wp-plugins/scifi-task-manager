@@ -6,18 +6,11 @@
  * Description: Simple admin dashboard task manager.
  * Author:      Adrian Dimitrov <dimitrov.adrian@gmail.com>
  * Author URI:  http://scifi.bg/opensource/
- * Version:     0.5
+ * Version:     0.6
  * Text Domain: scifi-task-manager
  * Domain Path: /languages/
  */
 
- 
- /**
-  * TODO:
-  
-  custom capabilities
-  
-  */
 
 /**
  * Localize the plugin.
@@ -97,16 +90,16 @@ add_action('admin_init', function() {
    * Register statuses
    */
   foreach (scifi_task_manager_get_statuses() as $status_id => $status) {
-    $label_count = is_rtl() ? '<span class="count">(%s)</span>' . $status->label : $status->label . ' <span class="count">(%s)</span>';
+    $label_count = is_rtl() ? '<span class="count">(%s)</span>' . $status['label'] : $status['label'] . ' <span class="count">(%s)</span>';
     register_post_status($status_id, array(
-      'label' => $status->label,
+      'label' => $status['label'],
       'label_count' => _n_noop($label_count, $label_count),
       'public' => TRUE,
       'exclude_from_search' => TRUE,
       'show_in_admin_all_list' => TRUE,
       'show_in_admin_status_list' => TRUE,
       'scifi_task_manager' => TRUE,
-      'scifi_task_manager_progress' => $status->progress,
+      'scifi_task_manager_progress' => $status['progress'],
     ));
   }
 
@@ -161,95 +154,7 @@ add_action('wp_dashboard_setup', function() {
 /**
  * Admin dashboard UI widget and tweaks
  */
-add_action('admin_head', function() {
-  ?>
-  <style>
-    .preview-active .preview-content { background: #fff; color: #555; height: 20px; border-bottom: none; }
-    #scifi-task-manager-single-task-preview { background: #fff; padding: 2%; border: 1px solid #E5E5E5; clear: both; width: 95.8%; float: left; margin-bottom: 0; }
-    #scifi_task_manager_widget p.info { color: #AAA; font-size: 1.2em; font-weight: bold; text-align: center; padding-bottom: 1em; }
-    .dashboard-widget-control-form fieldset { display: inline-block; vertical-align: top; margin: 11px; }
-    .dashboard-widget-control-form,
-    #scifi-task-manager-publish.postbox .inside #minor-publishing { margin: 10px; }
-    body.post-type-scifi-task-manager .actions.bulkactions,
-    #scifi-task-manager-attachments.postbox .inside,
-    #scifi-task-manager-publish.postbox .inside,
-    #scifi-task-manager-subtasks.postbox .inside,
-    #dashboard-widgets #scifi_task_manager_widget .inside { margin: 0; padding: 0; }
-    #scifi-task-manager-attachments.postbox .inside .wp-list-table,
-    #scifi-task-manager-subtasks.postbox .inside .wp-list-table,
-    #dashboard-widgets #scifi_task_manager_widget .wp-list-table { border: 0; }
-    #scifi_task_manager_widget td p { margin: 0; }
-    /* General colorization ans styling */
-    body.post-type-scifi-task-manager .wp-list-table tbody .column-status,
-    body.post-type-scifi-task-manager .wp-list-table tbody .column-menu_order,
-    #scifi_task_manager_widget .wp-list-table tbody .column-status,
-    #scifi_task_manager_widget .wp-list-table tbody .column-menu_order { text-align: center; vertical-align: middle; font-size: .8em; font-weight: bold; text-shadow: 0 0 6px #333; color: #fff; }
-    body.post-type-scifi-task-manager .wp-list-table .column-status,
-    body.post-type-scifi-task-manager .wp-list-table .column-menu_order,
-    #scifi_task_manager_widget .wp-list-table .column-status,
-    #scifi_task_manager_widget .wp-list-table .column-menu_order { width: 80px; }
-    <?php
-    foreach (scifi_task_manager_get_priorities('all') as $priority_number => $priority) {
-      echo ".scifi-task-manager-priority-{$priority_number} .column-menu_order {background: " . scifi_task_manager_color($priority_number) . ';} ';
-    }
-    foreach (scifi_task_manager_get_statuses('all') as $status_name => $status) {
-      echo ".scifi-task-manager-status-{$status_name} .column-status {background: " . scifi_task_manager_color($status->progress) . ';} ';
-    }
-    ?>
-  </style>
-<?php
-});
-
-/**
- * Init priorities
- */
-add_filter('scifi-task-manager-priorities', function($priorities = array()) {
-  $priorities[10] = __('Trivial', 'scifi-task-manager');
-  $priorities[25] = __('Low', 'scifi-task-manager');
-  $priorities[50] = __('Normal', 'scifi-task-manager');
-  $priorities[75] = __('High', 'scifi-task-manager');
-  $priorities[90] = __('Critical', 'scifi-task-manager');
-  return $priorities;
-});
-
-/**
- * Init statuses
- */
-add_filter('scifi-task-manager-statuses', function($statuses) {
-  $statuses['scifitm-pending'] = (object) array(
-    'label' => __('Pending', 'scifi-task-manager'),
-    'progress' => 80
-  );
-  $statuses['scifitm-rejected'] = (object) array(
-    'label' => __('Rejected', 'scifi-task-manager'),
-    'progress' => 70
-  );
-  $statuses['scifitm-hold'] = (object) array(
-    'label' => __('Hold', 'scifi-task-manager'),
-    'progress' => 60,
-  );
-  $statuses['scifitm-inprogress'] = (object) array(
-    'label' => __('In Progress', 'scifi-task-manager'),
-    'progress' => 40,
-  );
-  $statuses['scifitm-waitreview'] = (object) array(
-    'label' => __('Awaiting review', 'scifi-task-manager'),
-    'progress' => 40,
-  );
-  $statuses['scifitm-inreview'] = (object) array(
-    'label' => __('In Review', 'scifi-task-manager'),
-    'progress' => 30
-  );
-  $statuses['scifitm-resolved'] = (object) array(
-    'label' => __('Resolved', 'scifi-task-manager'),
-    'progress' => 0,
-  );
-  $statuses['scifitm-completed'] = (object) array(
-    'label' => __('Completed', 'scifi-task-manager'),
-    'progress' => 0,
-  );
-  return $statuses;
-});
+add_action('admin_head', '_scifi_task_manager_cssjs');
 
 /**
  * Override the post view link
@@ -265,8 +170,53 @@ add_filter('post_type_link', function($post_link, $post, $leavename, $sample) {
  * Prepare postdata before saving
  */
 add_filter('wp_insert_post_data', function($data, $postattr) {
-  return _scifi_task_manager_prepare_post_data($data);
+  return _scifi_task_manager_prepare_post_data($data, $postattr);
 }, 999, 2);
+
+/**
+ * Mailer action on post updated
+ */
+add_action('post_updated', function($post_id, $post_after, $post_before) {
+  scifi_task_manager_send_mails('update', $post_after, $post_before);
+}, 10, 3);
+
+/**
+ * Mailer action on post insert
+ */
+add_action('wp_insert_post', function($post_ID, $post, $update) {
+  if (!$update) {
+    scifi_task_manager_send_mails('add', $post);
+  }
+}, 10, 3);
+
+/**
+ * Mailer action on comment insert
+ */
+add_action('wp_insert_comment', function($comment_id, $comment) {
+  scifi_task_manager_send_mails('comment', $comment, NULL);
+}, 10, 2);
+
+/**
+ * Add user profile checkbox to enable/disable the mailer
+ */
+add_action('personal_options', function($userprofile) {
+  $enabled = $userprofile->_scifi_task_manager_recieve_mails === '' ? TRUE : !empty($userprofile->_scifi_task_manager_recieve_mails);
+  ?>
+  <table class="form-table">
+    <tr>
+      <th><label for="_scifi_task_manager_recieve_mails"><?php _e('Recieve mails', 'scifi-task-manager')?></label></th>
+      <td><input type="checkbox" name="_scifi_task_manager_recieve_mails" value="1" <?php checked(TRUE, $enabled)?> /></td>
+    </tr>
+  </table>
+  <?php
+});
+
+/**
+ * Update user mailer value
+ */
+add_action('edit_user_profile_update', function($user_id) {
+  update_user_meta($user_id,'_scifi_task_manager_recieve_mails', (empty($_POST['_scifi_task_manager_recieve_mails']) ? '0' : '1'));
+});
 
 /**
  * @single
@@ -308,11 +258,13 @@ add_action('add_meta_boxes_scifi-task-manager', function($post) {
     );
     $users = array();
     foreach (get_option('scifi-task-manager_roles', array()) as $role) {
-      $users += get_users(array(
+      foreach (get_users(array(
         'role' => $role,
         'orderby' => 'display_name',
         'fields' => array('ID', 'display_name'),
-      ));
+        )) as $user) {
+        $users[$user->ID] = $user;
+      }
     }
 
     if ($action != 'edit') {
@@ -403,7 +355,7 @@ add_action('edit_form_after_title', function() {
                 .show()
                 .html($('#content').text())
                 .html($("#content_ifr").contents().find('body').html());
-              $('td#content-resize-handle').hide();
+              $('#wp-content-media-buttons,td#content-resize-handle,#wp-word-count').hide();
             }
             else {
               $(previewContent).hide();
@@ -415,7 +367,7 @@ add_action('edit_form_after_title', function() {
               $('#wp-content-wrap')
                 .removeClass('preview-active')
                 .addClass(newClass);
-              $('td#content-resize-handle').show();
+              $('#wp-content-media-buttons,td#content-resize-handle,#wp-word-count').show();
             }
           });
           <?php if ($action === 'edit'):?>
@@ -453,7 +405,7 @@ add_action('save_post_scifi-task-manager', function($post_id, $post, $update) {
   if (isset($_POST['_inline_edit']) && !wp_verify_nonce($_POST[ '_inline_edit' ], 'inlineeditnonce')) {
     return;
   }
-  if (isset($post->post_type) && $post->post_type == 'revision') {
+  if (isset($post->post_type) && in_array($post->post_type, array('revision', 'draft', 'auto-draft'))) {
     return;
   }
   if (!empty($_POST['_scifi-task-manager_deadline'])) {
@@ -468,6 +420,20 @@ add_action('save_post_scifi-task-manager', function($post_id, $post, $update) {
 }, 10, 3);
 
 /**
+ * @single
+ * Manage comment actions
+ */
+add_filter('comment_row_actions', function($actions, $comment) {
+  if (is_ajax() && !empty($_REQUEST['mode']) && $_REQUEST['mode'] == 'single' && !empty($_REQUEST['p']) && !empty($_REQUEST['action']) && ($_REQUEST['action'] == 'get-comments' || $_REQUEST['action'] == 'replyto-comment')) {
+    $post = get_post($comment->comment_post_ID);
+    if ($post && $post->post_type == 'scifi-task-manager') {
+      $actions = array_intersect_key($actions, array_flip(array('approve', 'unapprove', 'reply', 'quickedit', 'trash')));
+    }
+  }
+  return $actions;
+}, 10, 2);
+
+/**
  * @list
  * Remove bulk operations
  */
@@ -479,9 +445,10 @@ add_filter('bulk_actions-edit-scifi-task-manager', '__return_empty_array');
  * Remove no-need inline operations
  */
 add_filter('page_row_actions', function($actions, $post) {
-  unset($actions['inline hide-if-no-js']);
-  unset($actions['pgcache_purge']);
-  unset($actions['edit']);
+  if ($post->post_type == 'scifi-task-manager') {
+    $supported_actions = array('trash');
+    $actions = array_intersect_key($actions, array_flip($supported_actions));
+  }
   return $actions;
 }, 10, 2);
 
@@ -511,11 +478,11 @@ add_filter('manage_edit-scifi-task-manager_columns', function($columns) {
  * Make custom columns sortable.
  */
 add_filter('manage_edit-scifi-task-manager_sortable_columns', function($sortable_columns) {
-  $sortable_columns['status'] = 'status';
-  $sortable_columns['menu_order'] = array('menu_order', TRUE);
+  $sortable_columns['status'] = array('status', TRUE);
+  $sortable_columns['menu_order'] = array('menu_order', FALSE);
   $sortable_columns['taskid'] = 'taskid';
   $sortable_columns['assignee'] = 'assignee';
-  $sortable_columns['deadline'] = 'deadline';
+  $sortable_columns['deadline'] = array('deadline', TRUE);
   return $sortable_columns;
 });
 
@@ -570,6 +537,10 @@ add_filter('parse_query', function($query) {
 
     if (!empty($_GET['parent_id'])) {
       $query->set('post_parent', $_GET['parent_id']);
+    }
+
+    if (!empty($_GET['filter_post_status'])) {
+      $query->set('post_status', $_GET['filter_post_status']);
     }
   }
   return $query;
