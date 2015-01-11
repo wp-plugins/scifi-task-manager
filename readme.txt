@@ -45,6 +45,15 @@ member (roles can be configured by settings) only information.
 
 == Changelog ==
 
+= 0.7 =
+* Added mail sender from configuration (note that wp_mail_from and wp_mail_from_name can override plugin's configuration)
+* Disabled post editing when user have no access to task
+* Added deadline in task change mail template
+* Fixed bug with missing is_ajax() reported by <Muneera_Salah>
+* Fixed mail sending to only reporter reported by <Muneera_Salah>
+* Fixed bug in dashboard when tags support is disabled
+* UI Fixes
+
 = 0.6 =
 * Added mail notify support
 * Changed status and progress colors, colors are now values

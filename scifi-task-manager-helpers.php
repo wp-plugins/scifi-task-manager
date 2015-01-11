@@ -247,6 +247,9 @@ function scifi_task_manager_dashboard_widget_get_tasks($config = array()) {
     'numberposts' => -1,
     'orderby' => 'menu_order',
     'order' => 'DESC',
+    'suppress_filters' => TRUE,
+    'ignore_sticky_posts' => TRUE,
+    'nopaging' => TRUE,
   );
 
   if (!empty($config['orderby'])) {
@@ -293,6 +296,33 @@ function scifi_task_manager_dashboard_widget_get_tasks($config = array()) {
 }
 
 /**
+ * Check if user have an access to task (is author or is assigned)
+ *
+ * @param int $user_id
+ * @param int $post_id
+ *
+ * @return bool
+ */
+function scifi_task_manager_user_have_access_to_task($user_id = 0, $post_id = 0) {
+  if ($user_id === 0) {
+    $user_id = get_current_user_id();
+  }
+  if ($post_id === 0) {
+    global $post;
+  }
+  else {
+    $post = get_post($post_id);
+  }
+  if (!$post) {
+    return FALSE;
+  }
+  if ($post->post_author == $user_id) {
+    return TRUE;
+  }
+  return in_array($user_id, get_post_meta($post->ID, '_scifi-task-manager_assignee'));
+}
+
+/**
  * Get dashboard widget configuration.
  *
  * @return array
@@ -336,6 +366,12 @@ function _scifi_task_manager_cssjs() {
         width: 95.8%;
         float: left;
         margin-bottom: 0;
+        overflow: hidden;
+      }
+
+      #scifi-task-manager-single-task-preview img {
+        max-width: 100%;
+        height: auto;
       }
 
       #scifi_task_manager_widget p.info {
@@ -372,10 +408,29 @@ function _scifi_task_manager_cssjs() {
         float: left;
       }
 
+      .scifi-task-manager-assignee-publish-list {
+        max-height: 15em;
+        overflow: hidden;
+      }
+
       body.post-type-scifi-task-manager .tablenav.top .bulkactions,
       body.post-type-scifi-task-manager .inline-edit-col-right,
-      body.post-php.post-type-scifi-task-manager #wpbody-content h2 {
-        display: none;
+      body.post-php.post-type-scifi-task-manager #wpbody-content h2,
+      form#post.disable-editting #wp-content-editor-tools,
+      form#post.disable-editting #post-status-info,
+      form#post.disable-editting #autosave-info,
+      form#post.disable-editting #wp-content-editor-tools,
+      form#post.disable-editting #wp-content-editor-container,
+      form#post.disable-editting .uploader-editor
+      {
+        display: none !important;
+      }
+      form#post.disable-editting #scifi-task-manager-single-task-preview {
+        display: block !important;
+      }
+
+      form#post.disable-editting .scifi-task-manager-assignee-publish-list {
+        max-height: initial;
       }
 
       body.post-php.post-type-scifi-task-manager #wpbody-content form#post {
@@ -416,10 +471,12 @@ function _scifi_task_manager_cssjs() {
       }
 
       body.post-type-scifi-task-manager .wp-list-table .column-status,
-      body.post-type-scifi-task-manager .wp-list-table .column-menu_order,
+      body.post-type-scifi-task-manager .wp-list-table .column-menu_order {
+        width: 100px;
+      }
       #scifi_task_manager_widget .wp-list-table .column-status,
       #scifi_task_manager_widget .wp-list-table .column-menu_order {
-        width: 100px;
+        width: 76px;
       }
 
       <?php
@@ -527,11 +584,20 @@ function _scifi_task_manager_admin_settings() {
     update_option('scifi-task-manager_roles', $_POST['scifi-task-manager_roles']);
     update_option('scifi-task-manager_tags', !empty($_POST['scifi-task-manager_tags']));
     update_option('scifi-task-manager_mailer', !empty($_POST['scifi-task-manager_mailer']));
+    update_option('scifi-task-manager_mail_from', $_POST['scifi-task-manager_mail_from']);
   }
 
   $menu_position = get_option('scifi-task-manager_menu');
   global $wp_roles;
   $roles = array_flip(get_option('scifi-task-manager_roles', array()));
+
+  $default_from_name = apply_filters( 'wp_mail_from_name', 'WordPress');
+  // Get the site domain and get rid of www.
+  $sitename = strtolower( $_SERVER['SERVER_NAME'] );
+  if ( substr( $sitename, 0, 4 ) == 'www.' ) {
+    $sitename = substr( $sitename, 4 );
+  }
+  $default_from_email = apply_filters('wp_mail_from', 'wordpress@' . $sitename);
 
   ?>
   <div class="wrap">
@@ -612,6 +678,20 @@ function _scifi_task_manager_admin_settings() {
           </td>
         </tr>
 
+        <tr>
+          <th>
+            <label for="scifi-task-manager_mailer">
+              <?php _e('Mail from', 'scifi-task-manager')?>
+            </label>
+          </th>
+          <td>
+            <p>
+              <input required="required" type="email" id="scifi-task-manager_mail_from" name="scifi-task-manager_mail_from" value="<?php echo esc_attr(get_option('scifi-task-manager_mail_from'))?>" />
+            </p>
+            <p><small><?php printf(__('Override the default wordpress mail from. If empty use default <code>%s &lt;%s&gt;</code>', 'scifi-task-manager'), $default_from_name, $default_from_email)?></small></p>
+          </td>
+        </tr>
+
       </table>
       
       <?php echo submit_button()?>
@@ -670,7 +750,7 @@ function scifi_task_manager_send_mails($action, $post, $old_post = NULL) {
     '{reporter}'   => $current_user->data->display_name,
     '{tasklink}'   => sprintf('<a href="%s" target="_blank">%s</a>', get_post_permalink($post->ID), $post->post_name),
     '{taskid}'     => $post->post_name,
-    '{deadline}'   => empty($post_meta['_scifi-task-manager_deadline'][0]) ? '--' : $post_meta['_scifi-task-manager_deadline'][0],
+    '{deadline}'   => empty($post_meta['_scifi-task-manager_deadline'][0]) ? '--' : date_i18n(get_option('date_format', 'U'), $post_meta['_scifi-task-manager_deadline'][0]),
     '{tasktitle}'  => $post->post_title,
     '{taskbody}'   => $post->post_content,
     '{taskstatus}' => $post->post_status,
@@ -684,7 +764,7 @@ function scifi_task_manager_send_mails($action, $post, $old_post = NULL) {
     $message = __('
 Hello,
 
-{reporter} just create new task changes in task {tasklink} ({tasktitle});
+{reporter} just create new task changes in task {tasklink} ({tasktitle}) with deadline {deadline}
 
 --
 This mail is sent automatically by task management system. Please do not reply.
@@ -751,7 +831,10 @@ This mail is sent automatically by task management system. Please do not reply.
 
   $message = wpautop(wptexturize(strtr($message, $message_tokens)));
   $headers = array(
-    'Content-Type: text/html; charset=UTF-8',
+    'content-type: text/html; charset=UTF-8',
   );
-  return wp_mail($recipients, $subject, $message, $headers);
+  if (get_option('scifi-task-manager_mail_from')) {
+    $headers[] = 'from: ' . get_option('scifi-task-manager_mail_from');
+  }
+  return wp_mail(implode(', ', $recipients), $subject, $message, $headers);
 }

@@ -81,7 +81,7 @@
 
     <div>
       <?php _e('Assignee', 'scifi-task-manager')?>
-      <div style="max-height:15em;overflow:auto;">
+      <div class="scifi-task-manager-assignee-publish-list">
         <?php foreach ($users as $user):?>
           <p>
             <input id="_scifi-task-manager_assignee-<?php echo $user->ID?>" type="checkbox" name="_scifi-task-manager_assignee[]" value="<?php echo esc_attr($user->ID)?>" <?php checked(TRUE, in_array($user->ID, $assignee))?>>
@@ -99,6 +99,7 @@
     <input name="original_publish" type="hidden" id="original_publish" value="<?php echo esc_attr($post->post_status)?>" />
 
   </div>
+  <?php if (_scifi_task_manager_current_user_can() && scifi_task_manager_user_have_access_to_task()):?>
   <div id="major-publishing-actions">
     <p>
       <?php if ($post && $action == 'edit'):?>
@@ -109,4 +110,16 @@
       <?php submit_button(($action == 'edit' ? $labels->update_item : $labels->add_new), 'primary', 'save', FALSE)?>
     </p>
   </div>
+  <?php endif?>
 </div>
+
+<?php if (!(_scifi_task_manager_current_user_can() && scifi_task_manager_user_have_access_to_task())):?>
+<script>
+(function($) {
+  $(document).ready(function() {
+    $('form#post').addClass('disable-editting');
+    $('form#post :input').attr('disabled', 'disabled');
+  })
+}(jQuery));
+</script>
+<?php endif?>

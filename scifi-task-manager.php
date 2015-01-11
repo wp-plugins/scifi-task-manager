@@ -6,7 +6,7 @@
  * Description: Simple admin dashboard task manager.
  * Author:      Adrian Dimitrov <dimitrov.adrian@gmail.com>
  * Author URI:  http://scifi.bg/opensource/
- * Version:     0.6
+ * Version:     0.7
  * Text Domain: scifi-task-manager
  * Domain Path: /languages/
  */
@@ -424,7 +424,7 @@ add_action('save_post_scifi-task-manager', function($post_id, $post, $update) {
  * Manage comment actions
  */
 add_filter('comment_row_actions', function($actions, $comment) {
-  if (is_ajax() && !empty($_REQUEST['mode']) && $_REQUEST['mode'] == 'single' && !empty($_REQUEST['p']) && !empty($_REQUEST['action']) && ($_REQUEST['action'] == 'get-comments' || $_REQUEST['action'] == 'replyto-comment')) {
+  if (defined('DOING_AJAX') && DOING_AJAX && !empty($_REQUEST['mode']) && $_REQUEST['mode'] == 'single' && !empty($_REQUEST['p']) && !empty($_REQUEST['action']) && ($_REQUEST['action'] == 'get-comments' || $_REQUEST['action'] == 'replyto-comment')) {
     $post = get_post($comment->comment_post_ID);
     if ($post && $post->post_type == 'scifi-task-manager') {
       $actions = array_intersect_key($actions, array_flip(array('approve', 'unapprove', 'reply', 'quickedit', 'trash')));

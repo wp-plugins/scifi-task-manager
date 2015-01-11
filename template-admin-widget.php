@@ -53,9 +53,11 @@
             <?php echo $deadline?>
           </p>
           <?php endif?>
+          <?php if (get_option('scifi-task-manager_tags')):?>
           <p class="scifi-task-manager-admin-widget-col-tags">
             <?php echo get_the_term_list($post->ID, 'scifi-task-manager-tag', '<strong>' . __('Tags: ', 'scifi-task-manager') . '</strong>', ', ' )?>
           </p>
+          <?php endif?>
           <p class="scifi-task-manager-admin-widget-col-author">
             <strong><?php _e('Reported by', 'scifi-task-manager')?>:</strong>
             <?php echo _scifi_task_manager_format_column('reporter', $post->ID, TRUE)?>
