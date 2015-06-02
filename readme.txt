@@ -2,7 +2,7 @@
 Contributors: dimitrov.adrian
 Tags: tasks, issues, project manager, project planning, issue tracking, bug
 Requires at least: 3.7
-Tested up to: 4.1
+Tested up to: 4.2
 Stable tag: 0.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -44,6 +44,10 @@ member (roles can be configured by settings) only information.
 
 
 == Changelog ==
+
+= 0.8 =
+* Added new column for admin widget "Description"
+* Fixed bug "scrollable assignee checkbox" https://wordpress.org/support/topic/scrollable-assignee-checkbox
 
 = 0.7 =
 * Added mail sender from configuration (note that wp_mail_from and wp_mail_from_name can override plugin's configuration)

@@ -14,6 +14,11 @@
       <th class="scifi-task-manager-admin-widget-col-task">
         <?php _e('Task', 'scifi-task-manager')?>
       </th>
+      <?php if (!empty($config['columns']['taskcontent'])):?>
+      <th class="scifi-task-manager-admin-widget-col-taskcontent">
+        <?php _e('Description')?>
+      </th>
+      <?php endif?>
       <?php if (!empty($config['columns']['info'])):?>
       <th class="scifi-task-manager-admin-widget-col-infoinfo">
         <?php _e('Info', 'scifi-task-manager')?>
@@ -45,6 +50,15 @@
           </p>
           <?php endif?>
         </td>
+        <?php if (!empty($config['columns']['taskcontent'])):?>
+        <td class="scifi-task-manager-admin-widget-col-taskcontent">
+          <?php if ($post->post_content):?>
+          <p>
+            <?php echo $post->post_content?>
+          </p>
+          <?php endif?>
+        </td>
+        <?php endif?>
         <?php if (!empty($config['columns']['info'])):?>
         <td class="scifi-task-manager-admin-widget-col-taskinfo">
           <?php if (($deadline = _scifi_task_manager_format_column('deadline', $post->ID, TRUE))):?>

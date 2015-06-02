@@ -6,7 +6,7 @@
  * Description: Simple admin dashboard task manager.
  * Author:      Adrian Dimitrov <dimitrov.adrian@gmail.com>
  * Author URI:  http://scifi.bg/opensource/
- * Version:     0.7
+ * Version:     0.8
  * Text Domain: scifi-task-manager
  * Domain Path: /languages/
  */
@@ -313,6 +313,7 @@ add_action('add_meta_boxes_scifi-task-manager', function($post) {
           'priority' => 1,
           'status' => 1,
           'info' => 0,
+          'taskcontent' => 0,
         ),
         'show_my_tasks_only' => 0,
         'limit' => 20,

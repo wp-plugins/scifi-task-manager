@@ -410,7 +410,7 @@ function _scifi_task_manager_cssjs() {
 
       .scifi-task-manager-assignee-publish-list {
         max-height: 15em;
-        overflow: hidden;
+        overflow-y: scroll;
       }
 
       body.post-type-scifi-task-manager .tablenav.top .bulkactions,
@@ -478,7 +478,10 @@ function _scifi_task_manager_cssjs() {
       #scifi_task_manager_widget .wp-list-table .column-menu_order {
         width: 76px;
       }
-
+      .scifi-task-manager-admin-widget-col-taskcontent img {
+        max-width: 99%;
+        height: auto;
+      }
       <?php
       foreach (scifi_task_manager_get_priorities('all') as $priority_number => $priority) {
         echo ".scifi-task-manager-priority-{$priority_number} .column-menu_order {background: " . $priority['color'] . ';} ';
@@ -523,6 +526,12 @@ function _scifi_task_manager_dashboard_widget_config($post, $callback_args) {
           <input type="checkbox" name="columns[info]" value="info" id="scifi-task-manager-columns-col-info" ' . checked(TRUE, !empty($config['columns']['info']), FALSE) . ' />
           <label for="scifi-task-manager-columns-col-info">
             ' . __('Info', 'scifi-task-manager') . '
+          </label>
+        </p>
+        <p>
+          <input type="checkbox" name="columns[taskcontent]" value="taskcontent" id="scifi-task-manager-columns-col-taskcontent" ' . checked(TRUE, !empty($config['columns']['taskcontent']), FALSE) . ' />
+          <label for="scifi-task-manager-columns-col-taskcontent">
+            ' . __('Description') . '
           </label>
         </p>
         <p>
