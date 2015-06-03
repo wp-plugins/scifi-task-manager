@@ -5,7 +5,7 @@
  * Plugin URI:  http://wordpress.org/extend/plugins/scifi-task-manager
  * Description: Simple admin dashboard task manager.
  * Author:      Adrian Dimitrov <dimitrov.adrian@gmail.com>
- * Author URI:  http://scifi.bg/opensource/
+ * Author URI:  http://e01.scifi.bg/
  * Version:     0.8
  * Text Domain: scifi-task-manager
  * Domain Path: /languages/
