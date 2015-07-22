@@ -25,7 +25,6 @@ member (roles can be configured by settings) only information.
 
 == TODO ==
 
-* Email notifications
 * FE task creation
 * Full preview lock
 * More translations
@@ -44,6 +43,11 @@ member (roles can be configured by settings) only information.
 
 
 == Changelog ==
+
+= 0.8.1 =
+* Fixed bug with required email in settings reported by <samwilson> https://wordpress.org/support/topic/email-field-is-required?replies=1
+* Fixed l10n domain for menu items
+* Updated Bulgarian language
 
 = 0.8 =
 * Added new column for admin widget "Description"

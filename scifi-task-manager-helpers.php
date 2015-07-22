@@ -695,7 +695,10 @@ function _scifi_task_manager_admin_settings() {
           </th>
           <td>
             <p>
-              <input required="required" type="email" id="scifi-task-manager_mail_from" name="scifi-task-manager_mail_from" value="<?php echo esc_attr(get_option('scifi-task-manager_mail_from'))?>" />
+              <input id="scifi-task-manager_mail_from" name="scifi-task-manager_mail_from" value="<?php echo esc_attr(get_option('scifi-task-manager_mail_from'))?>"
+                size="32" type="text" pattern="^(?:([\w\s]+)\s*<(\w+)([\-+.][\w]+)*@(\w[\-\w]*\.){1,5}([A-Za-z]){2,6}>|(\w+)([\-+.][\w]+)*@(\w[\-\w]*\.){1,5}([A-Za-z]){2,6})$"
+                title="<?php esc_attr_e('Email in format "name@domain.ll" or full from field in format "Name From <name@domain.ll>"', 'scifi-task-manager')?>"
+                />
             </p>
             <p><small><?php printf(__('Override the default wordpress mail from. If empty use default <code>%s &lt;%s&gt;</code>', 'scifi-task-manager'), $default_from_name, $default_from_email)?></small></p>
           </td>

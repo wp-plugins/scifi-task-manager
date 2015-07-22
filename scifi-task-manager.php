@@ -6,7 +6,7 @@
  * Description: Simple admin dashboard task manager.
  * Author:      Adrian Dimitrov <dimitrov.adrian@gmail.com>
  * Author URI:  http://e01.scifi.bg/
- * Version:     0.8
+ * Version:     0.8.1
  * Text Domain: scifi-task-manager
  * Domain Path: /languages/
  */
@@ -127,16 +127,16 @@ add_action('admin_menu', function() {
   $menu_position = get_option('scifi-task-manager_menu', '');
   if (_scifi_task_manager_current_user_can()) {
     if ($menu_position == 'tools') {
-      add_management_page(__('scifi Task Manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager');
+      add_management_page(__('scifi Task Manager', 'scifi-task-manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager');
     }
     elseif ($menu_position == 'main3') {
-      add_menu_page(__('scifi Task Manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager', NULL, 'dashicons-clipboard', 3);
+      add_menu_page(__('scifi Task Manager', 'scifi-task-manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager', NULL, 'dashicons-clipboard', 3);
     }
     elseif ($menu_position == 'main73') {
-      add_menu_page(__('scifi Task Manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager', NULL, 'dashicons-clipboard', 73);
+      add_menu_page(__('scifi Task Manager', 'scifi-task-manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager', NULL, 'dashicons-clipboard', 73);
     }
     elseif ($menu_position == '') {
-      add_dashboard_page(__('scifi Task Manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager');
+      add_dashboard_page(__('scifi Task Manager', 'scifi-task-manager'), __('Tasks', 'scifi-task-manager'), 'read', 'edit.php?post_type=scifi-task-manager');
     }
   }
 
