@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: scifi Task Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Wed Jan 07 2015 01:19:05 GMT+0200 (EET)\n"
-"PO-Revision-Date: Sat Aug 01 2015 13:27:26 GMT+0300 (EEST)\n"
+"PO-Revision-Date: Sat Aug 01 2015 14:02:00 GMT+0300 (EEST)\n"
 "Last-Translator: e01 <dimitrov.adrian@gmail.com>\n"
 "Language-Team: \n"
 "Language: Bulgarian\n"
@@ -34,7 +34,7 @@ msgstr "Тип\n"
 msgid "Size"
 msgstr "Размер"
 
-#: ../template-post-attachments.php:7 ../scifi-task-manager-helpers.php:599
+#: ../template-post-attachments.php:7 ../scifi-task-manager-helpers.php:600
 msgid "Date"
 msgstr "Дата"
 
@@ -143,14 +143,14 @@ msgstr "Подзадачи (%s)"
 msgid "Preview"
 msgstr "Преглед"
 
-#: ../scifi-task-manager.php:462 ../scifi-task-manager-helpers.php:570 ../scifi-
-#: task-manager-helpers.php:598 ../template-admin-widget.php:6 ../template-post-
+#: ../scifi-task-manager.php:462 ../scifi-task-manager-helpers.php:571 ../scifi-
+#: task-manager-helpers.php:599 ../template-admin-widget.php:6 ../template-post-
 #: publish.php:44
 msgid "Priority"
 msgstr "Важност"
 
-#: ../scifi-task-manager.php:463 ../scifi-task-manager-helpers.php:576 ../scifi-
-#: task-manager-helpers.php:597 ../template-admin-widget.php:11 ../template-post-
+#: ../scifi-task-manager.php:463 ../scifi-task-manager-helpers.php:577 ../scifi-
+#: task-manager-helpers.php:598 ../template-admin-widget.php:11 ../template-post-
 #: publish.php:56
 msgid "Status"
 msgstr "Статус"
@@ -168,7 +168,7 @@ msgstr "Докладвано"
 msgid "Assignee"
 msgstr "Сътрудник"
 
-#: ../scifi-task-manager.php:472 ../scifi-task-manager-helpers.php:600 ..
+#: ../scifi-task-manager.php:472 ../scifi-task-manager-helpers.php:601 ..
 #: template-admin-widget.php:66 ../template-post-publish.php:39
 msgid "Deadline"
 msgstr "Срок"
@@ -233,111 +233,115 @@ msgstr "Разрешен"
 msgid "Completed"
 msgstr "Завършен"
 
-#: ../scifi-task-manager-helpers.php:565
+#: ../scifi-task-manager-helpers.php:566
 msgid "Columns"
 msgstr "Колони"
 
-#: ../scifi-task-manager-helpers.php:582 ../template-admin-widget.php:24
+#: ../scifi-task-manager-helpers.php:583 ../template-admin-widget.php:24
 msgid "Info"
 msgstr "Допълнително"
 
-#: ../scifi-task-manager-helpers.php:588 ../template-admin-widget.php:19
+#: ../scifi-task-manager-helpers.php:589 ../template-admin-widget.php:19
 msgid "Description"
 msgstr "Описание"
 
-#: ../scifi-task-manager-helpers.php:593
+#: ../scifi-task-manager-helpers.php:594
 msgid "Order by"
 msgstr "Подредба"
 
-#: ../scifi-task-manager-helpers.php:596
+#: ../scifi-task-manager-helpers.php:597
 msgid "Default"
 msgstr "По подразбиране"
 
-#: ../scifi-task-manager-helpers.php:606
+#: ../scifi-task-manager-helpers.php:607
 msgid "Other settings"
 msgstr "Други настроийки"
 
-#: ../scifi-task-manager-helpers.php:611
+#: ../scifi-task-manager-helpers.php:612
 msgid "Show my tasks only"
 msgstr "Показване само на моите таскове"
 
-#: ../scifi-task-manager-helpers.php:616
+#: ../scifi-task-manager-helpers.php:617
 msgid "Limit"
 msgstr "Лимит"
 
-#: ../scifi-task-manager-helpers.php:622
+#: ../scifi-task-manager-helpers.php:623
 msgid "Time filter"
 msgstr "Ограничение по време"
 
-#: ../scifi-task-manager-helpers.php:625
+#: ../scifi-task-manager-helpers.php:626
 msgid "Any"
 msgstr "Всички"
 
-#: ../scifi-task-manager-helpers.php:626
+#: ../scifi-task-manager-helpers.php:627
 msgid "Today"
 msgstr "Днес"
 
-#: ../scifi-task-manager-helpers.php:627
+#: ../scifi-task-manager-helpers.php:628
 msgid "Week"
 msgstr "Седмица"
 
-#: ../scifi-task-manager-helpers.php:628
+#: ../scifi-task-manager-helpers.php:629
 msgid "Month"
 msgstr "Месец"
 
-#: ../scifi-task-manager-helpers.php:629
+#: ../scifi-task-manager-helpers.php:630
 msgid "Year"
 msgstr "Година"
 
-#: ../scifi-task-manager-helpers.php:669
+#: ../scifi-task-manager-helpers.php:672
+msgid "You like the plugin? Rate it and write your feedback."
+msgstr "Харесвате разширението? Оценете го и дайте своето мнение."
+
+#: ../scifi-task-manager-helpers.php:675
 msgid "scifi Task Manager settings"
 msgstr "scifi Task Manager настройки"
 
-#: ../scifi-task-manager-helpers.php:678
+#: ../scifi-task-manager-helpers.php:683
 msgid "Menu position"
 msgstr "Позиция на менюто"
 
-#: ../scifi-task-manager-helpers.php:683
+#: ../scifi-task-manager-helpers.php:688
 msgid "Dashboard"
 msgstr "Табло"
 
-#: ../scifi-task-manager-helpers.php:684
+#: ../scifi-task-manager-helpers.php:689
 msgid "Main Menu (top)"
 msgstr "Основно меню (горе)"
 
-#: ../scifi-task-manager-helpers.php:685
+#: ../scifi-task-manager-helpers.php:690
 msgid "Main Menu (auto)"
 msgstr "Основно меню (авт.)"
 
-#: ../scifi-task-manager-helpers.php:686
+#: ../scifi-task-manager-helpers.php:691
 msgid "Admin Bar"
 msgstr "Администраторска лента"
 
-#: ../scifi-task-manager-helpers.php:687
+#: ../scifi-task-manager-helpers.php:692
 msgid "Tools"
 msgstr "Разни"
 
-#: ../scifi-task-manager-helpers.php:694
+#: ../scifi-task-manager-helpers.php:699
 msgid "Tags support"
 msgstr "Поддръжка на етикети"
 
-#: ../scifi-task-manager-helpers.php:700 ../scifi-task-manager-helpers.php:739
+#: ../scifi-task-manager-helpers.php:705 ../scifi-task-manager-helpers.php:744
 msgid "Enable"
 msgstr "Включване"
 
-#: ../scifi-task-manager-helpers.php:706
+#: ../scifi-task-manager-helpers.php:711
 msgid "Manage tags"
 msgstr "Управление на етикетите"
 
-#: ../scifi-task-manager-helpers.php:716
+#: ../scifi-task-manager-helpers.php:721
 msgid "User roles"
 msgstr "Потребителски роли"
 
-#: ../scifi-task-manager-helpers.php:733
+#: ../scifi-task-manager-helpers.php:738
 msgid "Mail notification"
 msgstr "E-Mail известия"
 
-#: ../scifi-task-manager-helpers.php:742
+#: ../scifi-task-manager-helpers.php:747
 msgid ""
 "Recieve mails with changes when tasks are created or modified, or are being "
 "commented. Users have ability to unsubscribe from mail notification."
@@ -346,11 +350,11 @@ msgstr ""
 "на задачите. Потребителите могат да се отказват от получаването на "
 "уведомленията."
 
-#: ../scifi-task-manager-helpers.php:749
+#: ../scifi-task-manager-helpers.php:754
 msgid "Mail from"
 msgstr "E-mail изпращач"
 
-#: ../scifi-task-manager-helpers.php:756
+#: ../scifi-task-manager-helpers.php:761
 msgid ""
 "Email in format \"name@domain.ll\" or full from field in format \"Name From "
 "<name@domain.ll>\""
@@ -358,7 +362,7 @@ msgstr ""
 "E-mail във формат \"име@домейн.зона\" или пълнен запис \"Име Изпращач "
 "<име@домейн.зона>\""
 
-#: ../scifi-task-manager-helpers.php:759
+#: ../scifi-task-manager-helpers.php:764
 #, php-format
 msgid ""
 "Override the default wordpress mail from. If empty use default <code>%s &lt;"
@@ -367,20 +371,20 @@ msgstr ""
 "Презаписване на подразбиращият се e-mail адрес от wordpress. Ако се остави "
 "празно следния <code>%s &lt;%s&gt;</code> ще бъде използван."
 
-#: ../scifi-task-manager-helpers.php:766
+#: ../scifi-task-manager-helpers.php:771
 msgid "Priorities"
 msgstr "Приоритети"
 
-#: ../scifi-task-manager-helpers.php:784
+#: ../scifi-task-manager-helpers.php:789
 msgid "Statuses"
 msgstr "Статуси"
 
-#: ../scifi-task-manager-helpers.php:867
+#: ../scifi-task-manager-helpers.php:872
 #, php-format
 msgid "Created new task - %s by %s"
 msgstr "Беше създадена нова задача - %s от %s"
 
-#: ../scifi-task-manager-helpers.php:868
+#: ../scifi-task-manager-helpers.php:873
 msgid ""
 "\n"
 "Hello,\n"
@@ -403,34 +407,34 @@ msgstr ""
 "Този e-mail е изпратен автоматично. Моля не отговаряйте.\n"
 "{site}"
 
-#: ../scifi-task-manager-helpers.php:882
+#: ../scifi-task-manager-helpers.php:887
 #, php-format
 msgid "Status changed from %s to %s"
 msgstr "Статуса беше променен от %s на %s"
 
-#: ../scifi-task-manager-helpers.php:885
+#: ../scifi-task-manager-helpers.php:890
 #, php-format
 msgid "Priority changed from %s to %s"
 msgstr "Приоритетът беше променен от %s на %s"
 
-#: ../scifi-task-manager-helpers.php:888
+#: ../scifi-task-manager-helpers.php:893
 #, php-format
 msgid "Reporter changed from %s to %s"
 msgstr "Докладчикът беше променен от %s на %s"
 
-#: ../scifi-task-manager-helpers.php:891
+#: ../scifi-task-manager-helpers.php:896
 #, php-format
 msgid "Parent task changed from %s to %s"
 msgstr ""
 "Главната задача беше променена \n"
 "от %s на %s"
 
-#: ../scifi-task-manager-helpers.php:898
+#: ../scifi-task-manager-helpers.php:903
 #, php-format
 msgid "Updated task - %s by %s"
 msgstr "Задача беше обновена - %s от %s"
 
-#: ../scifi-task-manager-helpers.php:899
+#: ../scifi-task-manager-helpers.php:904
 msgid ""
 "\n"
 "Hello,\n"
@@ -461,14 +465,14 @@ msgstr ""
 "\n"
 "{site}"
 
-#: ../scifi-task-manager-helpers.php:917
+#: ../scifi-task-manager-helpers.php:922
 #, php-format
 msgid "New comment on task - %s by %s"
 msgstr ""
 "Нов коментар по задача \n"
 "%s от %s"
 
-#: ../scifi-task-manager-helpers.php:918
+#: ../scifi-task-manager-helpers.php:923
 msgid ""
 "\n"
 "Hello,\n"

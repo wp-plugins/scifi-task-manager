@@ -531,6 +531,7 @@ function _scifi_task_manager_cssjs() {
       <style>
         .scifi-task-manager-colors-list .wp-picker-container,
         input.scifi-task-manager-color-field { vertical-align: middle; }
+        .scifi-task-manager-likeit { float: right; }
       </style>
       <script>
         (function($) {
@@ -666,8 +667,12 @@ function _scifi_task_manager_admin_settings() {
 
   ?>
   <div class="wrap">
+    <div class="scifi-task-manager-likeit">
+      <a rel="noreferrer" href="https://wordpress.org/support/view/plugin-reviews/scifi-task-manager#postform" target="_blank">
+        <?php _e('You like the plugin? Rate it and write your feedback.', 'scifi-task-manager')?>
+      </a>
+    </div>
     <h2><?php _e('scifi Task Manager settings', 'scifi-task-manager')?></h2>
-
     <form method="post">
       <?php wp_nonce_field('scifi-task-manager-admin-settings', 'scifi-task-manager-admin-settings')?>
       <table class="form-table">
