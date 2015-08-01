@@ -1,14 +1,3 @@
-<?php /*
-<select name="filter_post_status">
-  <option value=""><?php _e('All statuses', 'scifi-task-manager')?></option>
-  <?php foreach (scifi_task_manager_get_statuses() as $status_id => $status):?>
-    <option value="<?php echo esc_attr($status_id)?>" <?php selected(TRUE, (!empty($_GET['filter_post_status']) && $_GET['filter_post_status'] == $status_id))?>>
-      <?php echo $status['label']?>
-    </option>
-  <?php endforeach?>
-</select>
-*/ ?>
-
 <?php wp_dropdown_pages(array(
   'post_type' => 'scifi-task-manager',
   'post_status' => array_keys(scifi_task_manager_get_statuses()),

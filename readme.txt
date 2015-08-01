@@ -115,6 +115,11 @@ I have a little task list that I will add in next releases.
 
 == Changelog ==
 
+= 0.8.2 =
+* Added status and priorities labels and colors editing in admin panel
+* Added status remembering when open tasklist
+* Fixed assets include
+
 = 0.8.1 =
 * Fixed bug with required email in settings reported by <samwilson> https://wordpress.org/support/topic/email-field-is-required?replies=1
 * Fixed l10n domain for menu items

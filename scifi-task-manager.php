@@ -6,7 +6,7 @@
  * Description: Simple admin dashboard task manager.
  * Author:      Adrian Dimitrov <dimitrov.adrian@gmail.com>
  * Author URI:  http://e01.scifi.bg/
- * Version:     0.8.1
+ * Version:     0.8.2
  * Text Domain: scifi-task-manager
  * Domain Path: /languages/
  */
@@ -498,6 +498,57 @@ add_action('manage_scifi-task-manager_posts_custom_column', function($column_nam
 
 /**
  * @list
+ * Override the views links.
+ */
+add_filter('views_edit-scifi-task-manager', function($views) {
+
+  global $locked_post_status, $avail_post_stati;
+  $post_type = get_current_screen()->post_type;
+  $num_posts = wp_count_posts( $post_type, 'readable' );
+  $total_posts = array_sum( (array) $num_posts );
+  $current_status = empty($_REQUEST['post_status']) ? '' : explode(',', $_REQUEST['post_status']);
+
+  $all_inner_html = sprintf(
+    _nx(
+      'All <span class="count">(%s)</span>',
+      'All <span class="count">(%s)</span>',
+      $total_posts,
+      'posts'
+    ),
+    number_format_i18n( $total_posts )
+  );
+  $class = in_array('all', $current_status) ? ' class="current"' : '';
+  $status_links['all'] = "<a href='edit.php?post_status=all&amp;post_type=$post_type'$class>" . $all_inner_html . "</a>";
+  foreach ( get_post_stati(array('show_in_admin_status_list' => true), 'objects') as $status ) {
+    $class = '';
+    $status_name = $status->name;
+
+    if ( !in_array( $status_name, $avail_post_stati ) || empty( $num_posts->$status_name )) {
+      continue;
+    }
+
+    if (in_array('all', $current_status)) {
+      $current_status_ = array();
+    }
+    else {
+      $current_status_ = $current_status;
+    }
+    if (is_int($current_status_ik = array_search($status_name, $current_status))) {
+      $class = ' class="current"';
+      unset($current_status_[$current_status_ik]);
+    }
+    else {
+      $current_status_[] = $status_name;
+    }
+
+    $status_links[$status_name] = "<a href='edit.php?post_status=" . implode(',', $current_status_) . "&amp;post_type=$post_type'$class>" . sprintf( translate_nooped_plural( $status->label_count, $num_posts->$status_name ), number_format_i18n( $num_posts->$status_name ) ) . '</a>';
+  }
+
+  return $status_links;
+});
+
+/**
+ * @list
  * Add custom filters widgets.
  */
 add_action('restrict_manage_posts', function() {
@@ -529,20 +580,47 @@ add_action('restrict_manage_posts', function() {
  */
 add_filter('parse_query', function($query) {
   global $pagenow;
-  if ($pagenow == 'edit.php' && !empty($query->query_vars['post_type']) && $query->query_vars['post_type']) {
+  if ($pagenow == 'edit.php' && $query->get('post_type') && $query->get('post_type') == 'scifi-task-manager') {
 
-    if (!empty($_GET['assignee'])) {
+    if (!empty($_REQUEST['assignee'])) {
       $query->set('meta_key', '_scifi-task-manager_assignee');
-      $query->set('meta_value', $_GET['assignee']);
+      $query->set('meta_value', $_REQUEST['assignee']);
     }
 
-    if (!empty($_GET['parent_id'])) {
-      $query->set('post_parent', $_GET['parent_id']);
+    if (!empty($_REQUEST['parent_id'])) {
+      $query->set('post_parent', $_REQUEST['parent_id']);
     }
 
-    if (!empty($_GET['filter_post_status'])) {
-      $query->set('post_status', $_GET['filter_post_status']);
+    if (!empty($_REQUEST['post_status'])) {
+      if ($_REQUEST['post_status'] != 'all') {
+        $query->set('post_status', $_REQUEST['post_status']);
+      }
+      update_user_option(get_current_user_id(), 'scifi-task-manager_default_status', $_REQUEST['post_status']);
     }
+    elseif ($_REQUEST['post_status'] = get_user_option('scifi-task-manager_default_status')) {
+      $query->set('post_status', $_REQUEST['post_status']);
+    }
+
+    // Save ordering
+    // The list using $_GET
+    if (!empty($_REQUEST['orderby'])) {
+      $query->set('orderby', $_REQUEST['orderby']);
+      update_user_option(get_current_user_id(), 'scifi-task-manager_default_orderby', $_REQUEST['orderby']);
+    }
+    elseif ($_GET['orderby'] = get_user_option('scifi-task-manager_default_orderby')) {
+      $query->set('orderby', $_GET['orderby']);
+    }
+    if (!empty($_REQUEST['order'])) {
+      $query->set('order', $_REQUEST['order']);
+      update_user_option(get_current_user_id(), 'scifi-task-manager_default_order', $_REQUEST['order']);
+    }
+    elseif ($_GET['order'] = get_user_option('scifi-task-manager_default_order')) {
+      $query->set('order', $_GET['order']);
+    }
+    $query->query['orderby'] = $query->get('orderby');
+    $query->query['order'] = $query->get('order');
+
   }
+
   return $query;
 });

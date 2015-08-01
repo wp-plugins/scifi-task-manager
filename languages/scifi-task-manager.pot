@@ -5,7 +5,7 @@ msgstr ""
 "Project-Id-Version: scifi Task Manager\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: Wed Jan 07 2015 01:19:05 GMT+0200 (EET)\n"
-"POT-Revision-Date: Wed Jul 22 2015 21:10:15 GMT+0300 (EEST)\n"
+"POT-Revision-Date: Sat Aug 01 2015 13:26:52 GMT+0300 (EEST)\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -36,7 +36,7 @@ msgstr ""
 msgid "Size"
 msgstr ""
 
-#: ../template-post-attachments.php:7 ../scifi-task-manager-helpers.php:545
+#: ../template-post-attachments.php:7 ../scifi-task-manager-helpers.php:599
 msgid "Date"
 msgstr ""
 
@@ -123,7 +123,7 @@ msgstr ""
 msgid "Task details"
 msgstr ""
 
-#: ../scifi-task-manager.php:255 ../template-post-list-filters.php:17
+#: ../scifi-task-manager.php:255 ../template-post-list-filters.php:6
 msgid "(general task)"
 msgstr ""
 
@@ -145,14 +145,14 @@ msgstr ""
 msgid "Preview"
 msgstr ""
 
-#: ../scifi-task-manager.php:462 ../scifi-task-manager-helpers.php:516 ../scifi-
-#: task-manager-helpers.php:544 ../template-admin-widget.php:6 ../template-post-
+#: ../scifi-task-manager.php:462 ../scifi-task-manager-helpers.php:570 ../scifi-
+#: task-manager-helpers.php:598 ../template-admin-widget.php:6 ../template-post-
 #: publish.php:44
 msgid "Priority"
 msgstr ""
 
-#: ../scifi-task-manager.php:463 ../scifi-task-manager-helpers.php:522 ../scifi-
-#: task-manager-helpers.php:543 ../template-admin-widget.php:11 ../template-post-
+#: ../scifi-task-manager.php:463 ../scifi-task-manager-helpers.php:576 ../scifi-
+#: task-manager-helpers.php:597 ../template-admin-widget.php:11 ../template-post-
 #: publish.php:56
 msgid "Status"
 msgstr ""
@@ -170,10 +170,18 @@ msgstr ""
 msgid "Assignee"
 msgstr ""
 
-#: ../scifi-task-manager.php:472 ../scifi-task-manager-helpers.php:546 ..
+#: ../scifi-task-manager.php:472 ../scifi-task-manager-helpers.php:600 ..
 #: /template-admin-widget.php:66 ../template-post-publish.php:39
 msgid "Deadline"
 msgstr ""
+
+#: ../scifi-task-manager.php:512
+#, php-format
+msgctxt "posts"
+msgid "All <span class=\"count\">(%s)</span>"
+msgid_plural "All <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
 
 #: ../scifi-task-manager-helpers.php:41
 msgid "Trivial"
@@ -195,171 +203,179 @@ msgstr ""
 msgid "Critical"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:80
+#: ../scifi-task-manager-helpers.php:95
 msgid "Pending"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:85
+#: ../scifi-task-manager-helpers.php:100
 msgid "Rejected"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:90
+#: ../scifi-task-manager-helpers.php:105
 msgid "Hold"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:95
+#: ../scifi-task-manager-helpers.php:110
 msgid "In Progress"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:100
+#: ../scifi-task-manager-helpers.php:115
 msgid "Awaiting review"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:105
+#: ../scifi-task-manager-helpers.php:120
 msgid "In Review"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:110
+#: ../scifi-task-manager-helpers.php:125
 msgid "Resolved"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:115
+#: ../scifi-task-manager-helpers.php:130
 msgid "Completed"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:511
+#: ../scifi-task-manager-helpers.php:565
 msgid "Columns"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:528 ../template-admin-widget.php:24
+#: ../scifi-task-manager-helpers.php:582 ../template-admin-widget.php:24
 msgid "Info"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:534 ../template-admin-widget.php:19
+#: ../scifi-task-manager-helpers.php:588 ../template-admin-widget.php:19
 msgid "Description"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:539
+#: ../scifi-task-manager-helpers.php:593
 msgid "Order by"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:542
+#: ../scifi-task-manager-helpers.php:596
 msgid "Default"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:552
+#: ../scifi-task-manager-helpers.php:606
 msgid "Other settings"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:557
+#: ../scifi-task-manager-helpers.php:611
 msgid "Show my tasks only"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:562
+#: ../scifi-task-manager-helpers.php:616
 msgid "Limit"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:568
+#: ../scifi-task-manager-helpers.php:622
 msgid "Time filter"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:571
+#: ../scifi-task-manager-helpers.php:625
 msgid "Any"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:572
+#: ../scifi-task-manager-helpers.php:626
 msgid "Today"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:573
+#: ../scifi-task-manager-helpers.php:627
 msgid "Week"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:574
+#: ../scifi-task-manager-helpers.php:628
 msgid "Month"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:575
+#: ../scifi-task-manager-helpers.php:629
 msgid "Year"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:613
+#: ../scifi-task-manager-helpers.php:669
 msgid "scifi Task Manager settings"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:622
+#: ../scifi-task-manager-helpers.php:678
 msgid "Menu position"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:627
+#: ../scifi-task-manager-helpers.php:683
 msgid "Dashboard"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:628
+#: ../scifi-task-manager-helpers.php:684
 msgid "Main Menu (top)"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:629
+#: ../scifi-task-manager-helpers.php:685
 msgid "Main Menu (auto)"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:630
+#: ../scifi-task-manager-helpers.php:686
 msgid "Admin Bar"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:631
+#: ../scifi-task-manager-helpers.php:687
 msgid "Tools"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:638
+#: ../scifi-task-manager-helpers.php:694
 msgid "Tags support"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:644 ../scifi-task-manager-helpers.php:683
+#: ../scifi-task-manager-helpers.php:700 ../scifi-task-manager-helpers.php:739
 msgid "Enable"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:650
+#: ../scifi-task-manager-helpers.php:706
 msgid "Manage tags"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:660
+#: ../scifi-task-manager-helpers.php:716
 msgid "User roles"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:677
+#: ../scifi-task-manager-helpers.php:733
 msgid "Mail notification"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:686
+#: ../scifi-task-manager-helpers.php:742
 msgid ""
 "Recieve mails with changes when tasks are created or modified, or are being "
 "commented. Users have ability to unsubscribe from mail notification."
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:693
+#: ../scifi-task-manager-helpers.php:749
 msgid "Mail from"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:700
+#: ../scifi-task-manager-helpers.php:756
 msgid ""
 "Email in format \"name@domain.ll\" or full from field in format \"Name From "
 "<name@domain.ll>\""
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:703
+#: ../scifi-task-manager-helpers.php:759
 #, php-format
 msgid ""
 "Override the default wordpress mail from. If empty use default <code>%s &lt;"
 "%s&gt;</code>"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:775
+#: ../scifi-task-manager-helpers.php:766
+msgid "Priorities"
+msgstr ""
+
+#: ../scifi-task-manager-helpers.php:784
+msgid "Statuses"
+msgstr ""
+
+#: ../scifi-task-manager-helpers.php:867
 #, php-format
 msgid "Created new task - %s by %s"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:776
+#: ../scifi-task-manager-helpers.php:868
 msgid ""
 "\n"
 "Hello,\n"
@@ -373,32 +389,32 @@ msgid ""
 "{site}"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:790
+#: ../scifi-task-manager-helpers.php:882
 #, php-format
 msgid "Status changed from %s to %s"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:793
+#: ../scifi-task-manager-helpers.php:885
 #, php-format
 msgid "Priority changed from %s to %s"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:796
+#: ../scifi-task-manager-helpers.php:888
 #, php-format
 msgid "Reporter changed from %s to %s"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:799
+#: ../scifi-task-manager-helpers.php:891
 #, php-format
 msgid "Parent task changed from %s to %s"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:806
+#: ../scifi-task-manager-helpers.php:898
 #, php-format
 msgid "Updated task - %s by %s"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:807
+#: ../scifi-task-manager-helpers.php:899
 msgid ""
 "\n"
 "Hello,\n"
@@ -415,12 +431,12 @@ msgid ""
 "{site}"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:825
+#: ../scifi-task-manager-helpers.php:917
 #, php-format
 msgid "New comment on task - %s by %s"
 msgstr ""
 
-#: ../scifi-task-manager-helpers.php:826
+#: ../scifi-task-manager-helpers.php:918
 msgid ""
 "\n"
 "Hello,\n"
@@ -449,11 +465,11 @@ msgstr ""
 msgid "Reported by"
 msgstr ""
 
-#: ../template-post-list-filters.php:33
+#: ../template-post-list-filters.php:22
 msgid "All reporters"
 msgstr ""
 
-#: ../template-post-list-filters.php:42
+#: ../template-post-list-filters.php:31
 msgid "All assignees"
 msgstr ""
 

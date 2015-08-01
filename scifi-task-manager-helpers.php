@@ -30,12 +30,12 @@ function _scifi_task_manager_current_user_can() {
 /**
  * Get registered priorities or just a one
  *
- * @param $priority
+ * @param $priority_return
  * @param $label
  *
  * @return array|string
  */
-function scifi_task_manager_get_priorities($priority = 'all', $label = FALSE) {
+function scifi_task_manager_get_priorities($priority_return = 'all', $label = FALSE) {
   $priorities = array();
   $priorities[10] = array(
     'label' => __('Trivial', 'scifi-task-manager'),
@@ -57,24 +57,39 @@ function scifi_task_manager_get_priorities($priority = 'all', $label = FALSE) {
     'label' => __('Critical', 'scifi-task-manager'),
     'color' => '#CC0000',
   );
+
   $priorities = apply_filters('scifi-task-manager-priorities', $priorities);
-  if ($priority === 'all') {
+
+  // Merge with those of settings.
+  $priorities_settings = get_option('scifi-task-manager_priorities', array());
+  foreach ($priorities_settings as $id => $priority) {
+    if (!empty($priorities[$id])) {
+      if (!empty($priority['color'])) {
+        $priorities[$id]['color'] = $priority['color'];
+      }
+      if (!empty($priority['label'])) {
+        $priorities[$id]['label'] = $priority['label'];
+      }
+    }
+  }
+
+  if ($priority_return === 'all') {
     return $priorities;
   }
   else {
-    return empty($priorities[$priority]) ? NULL : ($label ? $priorities[$priority]['label'] : $priorities[$priority]);
+    return empty($priorities[$priority_return]) ? NULL : ($label ? $priorities[$priority_return]['label'] : $priorities[$priority_return]);
   }
 }
 
 /**
  * Get registered statuses or just a one
  *
- * @param $status
+ * @param $status_return
  * @param $label
  *
  * @return array|object
  */
-function scifi_task_manager_get_statuses($status = 'all', $label = FALSE) {
+function scifi_task_manager_get_statuses($status_return = 'all', $label = FALSE) {
   $statuses = array();
   $statuses['scifitm-pending'] = array(
     'label' => __('Pending', 'scifi-task-manager'),
@@ -116,13 +131,27 @@ function scifi_task_manager_get_statuses($status = 'all', $label = FALSE) {
     'progress' => 0,
     'color' => '#9ED645',
   );
-  
+
   $statuses = apply_filters('scifi-task-manager-statuses', $statuses);
-  if ($status === 'all') {
+
+  // Merge with those of settings.
+  $statuses_settings = get_option('scifi-task-manager_statuses', array());
+  foreach ($statuses_settings as $id => $status) {
+    if (!empty($statuses[$id])) {
+      if (!empty($status['color'])) {
+        $statuses[$id]['color'] = $status['color'];
+      }
+      if (!empty($status['label'])) {
+        $statuses[$id]['label'] = $status['label'];
+      }
+    }
+  }
+
+  if ($status_return === 'all') {
     return $statuses;
   }
   else {
-    return empty($statuses[$status]) ? NULL : ($label ? $statuses[$status]['label'] : $statuses[$status]);
+    return empty($statuses[$status_return]) ? NULL : ($label ? $statuses[$status_return]['label'] : $statuses[$status_return]);
   }
 }
 
@@ -493,7 +522,32 @@ function _scifi_task_manager_cssjs() {
     </style>
   <?php
   }
+
+  if (get_current_screen()->id == 'settings_page_scifi-task-manager') {
+    wp_enqueue_style('wp-color-picker');
+    wp_enqueue_script('wp-color-picker');
+    add_action('admin_footer', function() {
+      ?>
+      <style>
+        .scifi-task-manager-colors-list .wp-picker-container,
+        input.scifi-task-manager-color-field { vertical-align: middle; }
+      </style>
+      <script>
+        (function($) {
+          $(document).ready(function() {
+            $('input.scifi-task-manager-color-field').wpColorPicker({
+              palettes: false
+            });
+          });
+        }(jQuery));
+      </script>
+      <?php
+    });
+  }
 }
+
+
+
 
 /**
  * Build widget configuration
@@ -594,6 +648,8 @@ function _scifi_task_manager_admin_settings() {
     update_option('scifi-task-manager_tags', !empty($_POST['scifi-task-manager_tags']));
     update_option('scifi-task-manager_mailer', !empty($_POST['scifi-task-manager_mailer']));
     update_option('scifi-task-manager_mail_from', $_POST['scifi-task-manager_mail_from']);
+    update_option('scifi-task-manager_statuses', $_POST['scifi-task-manager_statuses']);
+    update_option('scifi-task-manager_priorities', $_POST['scifi-task-manager_priorities']);
   }
 
   $menu_position = get_option('scifi-task-manager_menu');
@@ -701,6 +757,42 @@ function _scifi_task_manager_admin_settings() {
                 />
             </p>
             <p><small><?php printf(__('Override the default wordpress mail from. If empty use default <code>%s &lt;%s&gt;</code>', 'scifi-task-manager'), $default_from_name, $default_from_email)?></small></p>
+          </td>
+        </tr>
+
+        <tr>
+          <th>
+            <label for="scifi-task-manager_colors_override">
+              <?php _e('Priorities', 'scifi-task-manager')?>
+            </label>
+          </th>
+          <td>
+            <ul class="scifi-task-manager-colors-list">
+            <?php foreach(scifi_task_manager_get_priorities() as $id => $priority):?>
+              <li>
+                <input data-default-color="<?php echo esc_attr(empty($priority['default-color']) ? $priority['color'] : $priority['default-color'])?>" type="text" name="scifi-task-manager_priorities[<?php echo esc_attr($id)?>][color]" value="<?php echo esc_attr($priority['color'])?>" class="scifi-task-manager-color-field" />
+                <input type="text" name="scifi-task-manager_priorities[<?php echo esc_attr($id)?>][label]" value="<?php echo esc_attr($priority['label'])?>" />
+              </li>
+            <?php endforeach?>
+            </ul>
+          </td>
+        </tr>
+
+        <tr>
+          <th>
+            <label for="scifi-task-manager_colors_override">
+              <?php _e('Statuses', 'scifi-task-manager')?>
+            </label>
+          </th>
+          <td>
+            <ul class="scifi-task-manager-colors-list">
+              <?php foreach(scifi_task_manager_get_statuses() as $id => $status):?>
+                <li>
+                  <input data-default-color="<?php echo esc_attr(empty($priority['default-color']) ? $priority['color'] : $priority['default-color'])?>" type="text" name="scifi-task-manager_statuses[<?php echo esc_attr($id)?>][color]" value="<?php echo esc_attr($status['color'])?>" class="scifi-task-manager-color-field" />
+                  <input type="text" name="scifi-task-manager_statuses[<?php echo esc_attr($id)?>][label]" value="<?php echo esc_attr($status['label'])?>" />
+                </li>
+              <?php endforeach?>
+            </ul>
           </td>
         </tr>
 
