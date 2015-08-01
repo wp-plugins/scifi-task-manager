@@ -1,6 +1,5 @@
 === scifi Task Manager ===
 Contributors: dimitrov.adrian
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=U3Q8DXVKKU5BL&lc=BG&item_name=scifi%20Task%20Manager&item_number=wpstm&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted
 Tags: tasks, issues, project manager, project planning, issue tracking, bug
 Requires at least: 3.7
 Tested up to: 4.2
@@ -24,12 +23,88 @@ member (roles can be configured by settings) only information.
 3. Tasks overview
 
 
-== TODO ==
+== Frequently Asked Questions ==
+
+= How can I add own priorities =
+The plugin itself doesn't provide option to setup your own priorities via the admin panel.
+I think I do most common cases, but if you really need to add/remove priorities you can do it via filter hook 'scifi-task-manager-priorities'
+
+*Simple example*
+[?php
+add_filter('scifi-task-manager-priorities', function($priorities) {
+
+
+  // Add custom priority.
+  $priorities[99] = array(
+
+    // Label of the priority
+    'label' => 'Very very critical',
+
+    // Color code
+    'color' => '#ff0000',
+  );
+
+
+  // Remove status.
+  unset($priorities[75]);
+
+  return $priorities;
+});
+?]
+
+
+= How can I add own statuses =
+The plugin itself doesn't provide option to setup your own priorities via the admin panel. But like the priorities, there are
+hook about it 'scifi-task-manager-statuses'
+
+
+*Simple example*
+[?php
+add_filter('scifi-task-manager-statuses', function($statuses) {
+
+
+  // Add custom status.
+  $statuses['myplugin-special-status1'] = array(
+
+    // Label of the status
+    'label' => 'My status 1',
+
+    // Status progress (0-100)
+    'progress' => 30,
+
+    // Color code
+    'color' => '#ff0000',
+  );
+
+
+  // Remove status.
+  unset($statuses['scifitm-resolved']);
+
+  return $statuses;
+});
+?]
+
+Please be carefull with statuses because some of the task could became *invisible* if you remove status that contain tasks.
+
+
+
+= Why I see tasks but the fields are not editable =
+
+If you notice such behaviour, this is because the task is not for you, this means that you are not owner or not assegnee for the task.
+
+
+= The plugin doesn't work =
+
+The plugin depends of PHP 5.4, so please check your PHP version first.
+
+
+= What are the future plans about the plugin =
+
+I have a little task list that I will add in next releases.
 
 * FE task creation
 * Full preview lock
 * More translations
-* (DONE) User role configuration
 * Custom capabilities
 
 
