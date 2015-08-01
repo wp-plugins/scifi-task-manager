@@ -30,25 +30,26 @@ The plugin itself doesn't provide option to setup your own priorities via the ad
 I think I do most common cases, but if you really need to add/remove priorities you can do it via filter hook 'scifi-task-manager-priorities'
 
 *Simple example*
-`add_filter('scifi-task-manager-priorities', function($priorities) {
-`
-`
-`  // Add custom priority.
-`  $priorities[99] = array(
-`
-`    // Label of the priority
-`    'label' => 'Very very critical',
-`
-`    // Color code
-`    'color' => '#ff0000',
-`  );
-`
-`
-`  // Remove status.
-`  unset($priorities[75]);
-`
-`  return $priorities;
-`});
+<?php
+add_filter('scifi-task-manager-priorities', function($priorities) {
+
+  // Add custom priority.
+  $priorities[99] = array(
+
+    // Label of the priority
+    'label' => 'Very very critical',
+
+    // Color code
+    'color' => '#ff0000',
+  );
+
+
+  // Remove status.
+  unset($priorities[75]);
+
+  return $priorities;
+});
+?>
 
 
 = How can I add own statuses =
@@ -57,7 +58,7 @@ hook about it 'scifi-task-manager-statuses'
 
 
 *Simple example*
-```
+<?php
 add_filter('scifi-task-manager-statuses', function($statuses) {
 
 
@@ -80,7 +81,7 @@ add_filter('scifi-task-manager-statuses', function($statuses) {
 
   return $statuses;
 });
-```
+?>
 
 Please be carefull with statuses because some of the task could became *invisible* if you remove status that contain tasks.
 
