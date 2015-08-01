@@ -25,6 +25,18 @@ member (roles can be configured by settings) only information.
 
 == Frequently Asked Questions ==
 
+= Why I see tasks but the fields are not editable =
+
+If you notice such behaviour, this is because the task is not for you, this means that you are not owner or not assegnee for the task.
+
+= The plugin doesn't work =
+
+The plugin depends of PHP 5.4, so please check your PHP version first.
+
+= How can I revert colors and labels =
+
+If you override the labels or colors on statuses or priorities and want to revert default values back, you can just clear the value and leave it empty, then save the settings.
+
 = How can I add own priorities =
 The plugin itself doesn't provide option to setup your own priorities via the admin panel.
 I think I do most common cases, but if you really need to add/remove priorities you can do it via filter hook 'scifi-task-manager-priorities'
@@ -80,17 +92,6 @@ hook about it 'scifi-task-manager-statuses'
 });`
 
 Please be carefull with statuses because some of the task could became *invisible* if you remove status that contain tasks.
-
-
-
-= Why I see tasks but the fields are not editable =
-
-If you notice such behaviour, this is because the task is not for you, this means that you are not owner or not assegnee for the task.
-
-
-= The plugin doesn't work =
-
-The plugin depends of PHP 5.4, so please check your PHP version first.
 
 
 = What are the future plans about the plugin =
