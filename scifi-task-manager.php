@@ -6,7 +6,7 @@
  * Description: Simple admin dashboard task manager.
  * Author:      Adrian Dimitrov <dimitrov.adrian@gmail.com>
  * Author URI:  http://e01.scifi.bg/
- * Version:     0.8.3
+ * Version:     0.8.4
  * Text Domain: scifi-task-manager
  * Domain Path: /languages/
  */
@@ -447,7 +447,7 @@ add_filter('bulk_actions-edit-scifi-task-manager', '__return_empty_array');
  */
 add_filter('page_row_actions', function($actions, $post) {
   if ($post->post_type == 'scifi-task-manager') {
-    $supported_actions = array('trash');
+    $supported_actions = array('trash', 'untrash', 'delete');
     $actions = array_intersect_key($actions, array_flip($supported_actions));
   }
   return $actions;
@@ -527,7 +527,7 @@ add_filter('views_edit-scifi-task-manager', function($views) {
       continue;
     }
 
-    if (in_array('all', $current_status)) {
+    if (in_array('all', $current_status) || in_array('trash', $current_status) || $status_name == 'trash') {
       $current_status_ = array();
     }
     else {
@@ -538,6 +538,9 @@ add_filter('views_edit-scifi-task-manager', function($views) {
       unset($current_status_[$current_status_ik]);
       if (!$current_status_) {
         $current_status_ = array('all');
+      }
+      if ($status_name == 'trash') {
+        $current_status_ = array($status_name);
       }
     }
     else {

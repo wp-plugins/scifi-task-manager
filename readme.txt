@@ -116,6 +116,10 @@ I have a little task list that I will add in next releases.
 
 == Changelog ==
 
+= 0.8.4 =
+* Tweak trash status behavior
+* Fixed missing restore and delete links
+
 = 0.8.3 =
 * Fixed PHP warnings
 
