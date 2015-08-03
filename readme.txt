@@ -116,6 +116,9 @@ I have a little task list that I will add in next releases.
 
 == Changelog ==
 
+= 0.8.3 =
+* Fixed PHP warnings
+
 = 0.8.2 =
 * Added status and priorities labels and colors editing in admin panel
 * Added status remembering when open tasklist
